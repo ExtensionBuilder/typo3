@@ -129,6 +129,9 @@ class DateTimeConverter extends AbstractTypeConverter
             $date = $targetType::createFromFormat($dateFormat, $dateAsString);
         }
         if ($date === false) {
+            $date = $targetType::createFromFormat(str_replace(['\\', ':', 'TH', 'H', 'i', 's', 'P'], '', $dateFormat), $dateAsString);
+		}
+        if ($date === false) {
             return new \TYPO3\CMS\Extbase\Validation\Error(
                 $this->translateErrorMessage(
                     'LLL:EXT:extbase/Resources/Private/Language/locallang.xlf:converter.datetime.notrecognized',
