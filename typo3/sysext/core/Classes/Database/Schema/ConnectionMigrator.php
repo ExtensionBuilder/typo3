@@ -33,8 +33,10 @@ use Doctrine\DBAL\Schema\UniqueConstraint;
 use Doctrine\DBAL\Types\BigIntType;
 use Doctrine\DBAL\Types\BinaryType;
 use Doctrine\DBAL\Types\IntegerType;
+use Doctrine\DBAL\Types\JsonType;
 use Doctrine\DBAL\Types\SmallIntType;
 use Doctrine\DBAL\Types\StringType;
+use Doctrine\DBAL\Types\TextType;
 use TYPO3\CMS\Core\Database\Connection as Typo3Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Platform\PlatformInformation;
@@ -1879,6 +1881,18 @@ class ConnectionMigrator
             return;
         }
 
+        foreach ($table->getColumns() as $column) {
+            // Doctrine DBAL 4 no longer determines the field type taking field comments into account. Due to the fact
+            // that SQLite does not provide a native JSON type, it is created as TEXT field type. In consequence, the
+            // current way to compare columns this leads to a change look for JSON fields. To mitigate this, until the
+            // real Doctrine DBAL 4 way to compare columns can be enabled we need to mirror that type transformation
+            // on the virtual database schema and change the type here.
+            // @see https://github.com/doctrine/dbal/blob/4.0.x/UPGRADE.md#bc-break-removed-platform-commented-type-api
+            if ($column->getType() instanceof JsonType) {
+                $column->setType(new TextType());
+            }
+        }
+
         // doctrine/dbal detects both sqlite autoincrement variants (row_id alias and autoincrement) through assumptions
         // which have been made. TYPO3 reads the ext_tables.sql files as MySQL/MariaDB variant, thus not setting the
         // autoincrement value to true for the row_id alias variant, which leads to an endless missmatch during database
@@ -1960,7 +1974,7 @@ class ConnectionMigrator
      * @return array{seqid: int, objid: int}|null
      * @throws DBALException
      */
-    private function getTableSequenceInformation(Typo3Connection $connection, TableDiff $changedTable, ColumnDiff $modifiedColumn): array|null
+    private function getTableSequenceInformation(Typo3Connection $connection, TableDiff $changedTable, ColumnDiff $modifiedColumn): ?array
     {
         $oldColumn = $modifiedColumn->getOldColumn();
         $newColumn = $modifiedColumn->getNewColumn();
@@ -1988,7 +2002,7 @@ class ConnectionMigrator
      * @return array{seqid: int, objid: int}|null
      * @throws DBALException
      */
-    private function getSequenceInfo(Typo3Connection $connection, string $table, string $field, int $colNum): array|null
+    private function getSequenceInfo(Typo3Connection $connection, string $table, string $field, int $colNum): ?array
     {
         $quotedTable = $connection->quote($table);
         $colNum = $connection->quote((string)$colNum);
@@ -2031,7 +2045,7 @@ class ConnectionMigrator
      * @see https://github.com/doctrine/dbal/blob/4.0.x/UPGRADE.md#bc-break-auto-increment-columns-on-postgresql-are-implemented-as-identity-not-serial
      * @see ConnectionMigrator::getTableSequenceInformation()
      */
-    private function getTableFieldColumnNumber(Typo3Connection $connection, string $table, string $field): int|null
+    private function getTableFieldColumnNumber(Typo3Connection $connection, string $table, string $field): ?int
     {
         $table = $connection->quote($table);
         $field = $connection->quote($field);
