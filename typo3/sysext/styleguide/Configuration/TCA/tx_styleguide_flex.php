@@ -84,6 +84,17 @@ return [
             ],
         ],
 
+        'flex_file_2' => [
+            'label' => 'flex_file_2 more complex flexform in external file',
+            'description' => 'field description',
+            'config' => [
+                'type' => 'flex',
+                'ds' => [
+                    'default' => 'FILE:EXT:styleguide/Configuration/FlexForms/MultipleSheets.xml',
+                ],
+            ],
+        ],
+
         'flex_5' => [
             'label' => 'flex_5 no sheets description',
             'description' => 'field description',
@@ -318,8 +329,50 @@ return [
                                                     <foreign_table>tx_styleguide_flex_flex_3_inline_1_child</foreign_table>
                                                     <foreign_field>parentid</foreign_field>
                                                     <foreign_table_field>parenttable</foreign_table_field>
+                                                    <overrideChildTca>
+                                                        <columns>
+                                                            <file_1>
+                                                                <description>Overridden description via overrideChildTca in flex</description>
+                                                                <config>
+                                                                    <allowed>common-image-types</allowed>
+                                                                </config>
+                                                            </file_1>
+                                                        </columns>
+                                                    </overrideChildTca>
                                                 </config>
                                             </inline_1>
+                                        </el>
+                                    </ROOT>
+                                </sInline>
+
+                            </sheets>
+                        </T3DataStructure>
+                    ',
+                ],
+            ],
+        ],
+
+        'flex_6' => [
+            'label' => 'flex_6 file',
+            'config' => [
+                'type' => 'flex',
+                'ds' => [
+                    'default' => '
+                        <T3DataStructure>
+                            <sheets>
+                                <sInline>
+                                    <ROOT>
+                                        <sheetTitle>file</sheetTitle>
+                                        <type>array</type>
+                                        <el>
+                                            <file_1>
+                                                <label>file_1</label>
+                                                <config>
+                                                    <type>file</type>
+                                                    <allowed>common-media-types</allowed>
+                                                    <maxitems>5</maxitems>
+                                                </config>
+                                            </file_1>
                                         </el>
                                     </ROOT>
                                 </sInline>
@@ -337,6 +390,8 @@ return [
             'showitem' => '
                 --div--;simple,
                     flex_file_1,
+                --div--;complex,
+                    flex_file_2,
                 --div--;no sheets,
                     flex_5,
                 --div--;sheet description,
@@ -345,6 +400,8 @@ return [
                     flex_2,
                 --div--;inline,
                     flex_3,
+                --div--;file,
+                    flex_6,
             ',
         ],
     ],
