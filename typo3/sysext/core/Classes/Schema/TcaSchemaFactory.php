@@ -56,8 +56,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class TcaSchemaFactory
 {
     protected array $schemata = [];
-    protected array $tca;
-    protected RelationMap $relationMap;
 
     public function __construct(
         protected readonly RelationMapBuilder $relationMapBuilder,
@@ -117,13 +115,12 @@ class TcaSchemaFactory
      *
      * @internal only used for TYPO3 Core internally, never use it in public!
      */
-    public function rebuild(array $tca): void
+    public function rebuild(array $fullTca): void
     {
-        $this->tca = $tca;
         $this->schemata = [];
-        $this->relationMap = $this->relationMapBuilder->buildFromStructure($this->tca);
-        foreach (array_keys($this->tca) as $table) {
-            $this->build($table);
+        $relationMap = $this->relationMapBuilder->buildFromStructure($fullTca);
+        foreach (array_keys($fullTca) as $table) {
+            $this->build($table, $fullTca, $relationMap);
         }
     }
 
@@ -159,24 +156,24 @@ class TcaSchemaFactory
      * As it is crucial to understand, parts such as FlexForms (incl. Sheet, SectionContainers and their Fields)
      * NEED to be resolved first, because they need to be attached.
      */
-    protected function build(string $schemaName): TcaSchema
+    protected function build(string $schemaName, array $fullTca, RelationMap $relationMap): TcaSchema
     {
         if (str_contains($schemaName, '.')) {
             [$mainSchema, $subSchema] = explode('.', $schemaName, 2);
-            $mainSchema = $this->build($mainSchema);
+            $mainSchema = $this->build($mainSchema, $fullTca, $relationMap);
             return $mainSchema->getSubSchema($subSchema);
         }
 
         // Collect all fields
         $allFields = [];
-        $schemaDefinition = $this->tca[$schemaName];
+        $schemaDefinition = $fullTca[$schemaName];
         foreach ($schemaDefinition['columns'] ?? [] as $fieldName => $fieldConfiguration) {
             try {
                 $field = $this->fieldTypeFactory->createFieldType(
                     $fieldName,
                     $fieldConfiguration,
                     $schemaName,
-                    $this->relationMap
+                    $relationMap
                 );
             } catch (FieldTypeNotAvailableException) {
                 continue;
@@ -206,7 +203,7 @@ class TcaSchemaFactory
                             $subSchemaName,
                             // Interesting side-note: The relations stay the same as it is not possible to modify
                             // this for a subtype.
-                            $this->relationMap,
+                            $relationMap,
                             $schemaName
                         );
                     } catch (FieldTypeNotAvailableException) {
@@ -229,7 +226,7 @@ class TcaSchemaFactory
             new FieldCollection($allFields),
             $schemaConfiguration,
             $subSchemata !== [] ? new SchemaCollection($subSchemata) : null,
-            $this->relationMap->getPassiveRelations($schemaName)
+            $relationMap->getPassiveRelations($schemaName)
         );
 
         $this->schemata[$schemaName] = $schema;

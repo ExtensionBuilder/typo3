@@ -129,22 +129,18 @@ return [
         ],
         'tables_modify' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:be_groups.tables_modify',
+            'description' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:be_groups.tables_modify.description',
             'config' => [
                 'type' => 'select',
-                'renderType' => 'selectCheckBox',
+                'renderType' => 'tablePermission',
+                'selectFieldName' => 'tables_select',
                 'itemsProcFunc' => \TYPO3\CMS\Core\Hooks\TcaItemsProcessorFunctions::class . '->populateAvailableTables',
-                'size' => 5,
-                'autoSizeMax' => 50,
             ],
         ],
         'tables_select' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:be_groups.tables_select',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectCheckBox',
-                'itemsProcFunc' => \TYPO3\CMS\Core\Hooks\TcaItemsProcessorFunctions::class . '->populateAvailableTables',
-                'size' => 5,
-                'autoSizeMax' => 50,
+                'type' => 'passthrough',
             ],
         ],
         'non_exclude_fields' => [
@@ -183,20 +179,6 @@ return [
                 'itemsProcFunc' => \TYPO3\CMS\Core\Hooks\TcaItemsProcessorFunctions::class . '->populateCustomPermissionOptions',
             ],
         ],
-        'hidden' => [
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.enabled',
-            'config' => [
-                'type' => 'check',
-                'renderType' => 'checkboxToggle',
-                'default' => 0,
-                'items' => [
-                    [
-                        'label' => '',
-                        'invertStateDisplay' => true,
-                    ],
-                ],
-            ],
-        ],
         'groupMods' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:userMods',
             'config' => [
@@ -215,15 +197,6 @@ return [
                 'itemsProcFunc' => \TYPO3\CMS\Core\Authentication\Mfa\MfaProviderRegistry::class . '->allowedProvidersItemsProcFunc',
                 'size' => 5,
                 'autoSizeMax' => 50,
-            ],
-        ],
-        'description' => [
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.description',
-            'config' => [
-                'type' => 'text',
-                'rows' => 5,
-                'cols' => 30,
-                'max' => 2000,
             ],
         ],
         'TSconfig' => [
@@ -266,7 +239,7 @@ return [
             --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
                 title, subgroup,
             --div--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:be_groups.tabs.record_permissions,
-                pagetypes_select, --palette--;;tableRestrictions, non_exclude_fields, explicit_allowdeny, allowed_languages,
+                pagetypes_select, tables_modify, non_exclude_fields, explicit_allowdeny, allowed_languages,
             --div--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:be_groups.tabs.module_permissions,
                 groupMods, mfa_providers, custom_options,
             --div--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:be_groups.tabs.mounts_and_workspaces,
@@ -279,12 +252,5 @@ return [
                 description,
             --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
         '],
-    ],
-    'palettes' => [
-        'tableRestrictions' => [
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:be_groups.palettes.tableRestrictions',
-            'showitem' => 'tables_select, tables_modify',
-            'description' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:be_groups.palettes.tableRestrictions.description',
-        ],
     ],
 ];
