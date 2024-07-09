@@ -167,6 +167,9 @@ getPhpImageVersion() {
         8.3)
             echo -n "1.13"
             ;;
+        8.4)
+            echo -n "1.0"
+            ;;
     esac
 }
 
@@ -193,7 +196,6 @@ Options:
             - cglHeaderGit: test and fix latest committed patch for CGL file header compliance
             - checkBom: check UTF-8 files do not contain BOM
             - checkComposer: check composer.json files for version integrity
-            - checkExceptionCodes: test core for duplicate exception codes
             - checkExtensionScannerRst: test all .rst files referenced by extension scanner exist
             - checkFilePathLength: test core file paths do not exceed maximum length
             - checkGitSubmodule: test core git has no sub modules defined
@@ -289,10 +291,11 @@ Options:
         Hack functional or acceptance tests into #numberOfChunks pieces and run tests of #chunk.
         Example -c 3/13
 
-    -p <8.2|8.3>
+    -p <8.2|8.3|8.4>
         Specifies the PHP minor version to be used
             - 8.2 (default): use PHP 8.2
             - 8.3: use PHP 8.3
+            - 8.4: use PHP 8.4
 
     -t sets|systemplate
         Only with -s acceptance|acceptanceComposer
@@ -443,7 +446,7 @@ while getopts ":a:b:s:c:d:i:t:p:xy:nhug" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(8.2|8.3)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.2|8.3|8.4)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
@@ -827,10 +830,6 @@ case ${TEST_SUITE} in
         ;;
     checkComposer)
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-composer-${SUFFIX} ${IMAGE_PHP} php -dxdebug.mode=off Build/Scripts/checkIntegrityComposer.php
-        SUITE_EXIT_CODE=$?
-        ;;
-    checkExceptionCodes)
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-exception-codes-${SUFFIX} ${IMAGE_PHP} Build/Scripts/duplicateExceptionCodeCheck.sh
         SUITE_EXIT_CODE=$?
         ;;
     checkExtensionScannerRst)
