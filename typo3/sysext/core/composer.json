@@ -47,7 +47,7 @@
 		"psr/container": "^2.0",
 		"psr/event-dispatcher": "^1.0",
 		"psr/http-client": "^1.0",
-		"psr/http-factory": "^1.0",
+		"psr/http-factory": "^1.1.0",
 		"psr/http-message": "^1.1 || ^2.0",
 		"psr/http-server-handler": "^1.0",
 		"psr/http-server-middleware": "^1.0",
@@ -65,6 +65,7 @@
 		"symfony/messenger": "^7.1",
 		"symfony/mime": "^7.1",
 		"symfony/options-resolver": "^7.1",
+		"symfony/process": "^7.1",
 		"symfony/rate-limiter": "^7.1",
 		"symfony/routing": "^7.1",
 		"symfony/uid": "^7.1",
@@ -73,7 +74,7 @@
 		"typo3/cms-cli": "^3.1",
 		"typo3/cms-composer-installers": "^5.0",
 		"typo3/html-sanitizer": "^2.1.4",
-		"typo3fluid/fluid": "^2.12.0"
+		"typo3fluid/fluid": "^2.13.0"
 	},
 	"suggest": {
 		"ext-apcu": "Needed when non-default APCU based cache backends are used",

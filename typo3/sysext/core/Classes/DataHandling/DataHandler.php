@@ -1721,8 +1721,9 @@ class DataHandler
     {
         // Always trim the value
         $value = trim($value);
-        // Secures the string-length to be <= 7.
-        $value = mb_substr($value, 0, 7, 'utf-8');
+        // Secures the string-length to be <= 7 or <= 9 if opacity enabled.
+        $opacity = (bool)($tcaFieldConf['opacity'] ?? false);
+        $value = mb_substr($value, 0, $opacity ? 9 : 7, 'utf-8');
         // Early return if required validation fails
         if (!$this->validateValueForRequired($tcaFieldConf, $value)) {
             return [];
@@ -5060,7 +5061,7 @@ class DataHandler
         }
         // Perform synchronization/localization: Possibly add unlocalized records for original language:
         if ($action === 'localize' || $action === 'synchronize') {
-            foreach ($elementsOriginal as $originalId => $item) {
+            foreach ($elementsOriginal as $item) {
                 if ($this->isRecordLocalized((string)$item['table'], (int)$item['id'], (int)$language)) {
                     continue;
                 }
