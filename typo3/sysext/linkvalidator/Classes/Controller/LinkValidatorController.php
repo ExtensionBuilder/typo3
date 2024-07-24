@@ -20,6 +20,7 @@ namespace TYPO3\CMS\Linkvalidator\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
+use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
@@ -81,8 +82,6 @@ class LinkValidatorController
     protected int $id;
     protected array $searchFields = [];
 
-    protected ServerRequestInterface $request;
-
     public function __construct(
         protected readonly Context $context,
         protected readonly UriBuilder $uriBuilder,
@@ -92,6 +91,7 @@ class LinkValidatorController
         protected readonly ModuleTemplateFactory $moduleTemplateFactory,
         protected readonly LinkAnalyzer $linkAnalyzer,
         protected readonly LinktypeRegistry $linktypeRegistry,
+        protected readonly TranslationConfigurationProvider $translationConfigurationProvider,
     ) {}
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
@@ -99,12 +99,11 @@ class LinkValidatorController
         $backendUser = $this->getBackendUser();
         $languageService = $this->getLanguageService();
 
-        $this->request = $request;
-        $this->id = (int)($this->request->getQueryParams()['id'] ?? 0);
+        $this->id = (int)($request->getQueryParams()['id'] ?? 0);
         $this->modTS = BackendUtility::getPagesTSconfig($this->id)['mod.']['linkvalidator.'] ?? [];
         $this->pageRecord = BackendUtility::readPageAccess($this->id, $this->getBackendUser()->getPagePermsClause(Permission::PAGE_SHOW)) ?: [];
 
-        $view = $this->moduleTemplateFactory->create($this->request);
+        $view = $this->moduleTemplateFactory->create($request);
         if ($this->pageRecord !== []) {
             $view->getDocHeaderComponent()->setMetaInformation($this->pageRecord);
         }
@@ -112,7 +111,7 @@ class LinkValidatorController
         $this->validateSettings($request);
         $this->initializeLinkAnalyzer();
 
-        if ($this->request->getParsedBody()['updateLinkList'] ?? false) {
+        if ($request->getParsedBody()['updateLinkList'] ?? false) {
             $this->updateBrokenLinks();
         } elseif ($this->lastEditedRecord['uid']) {
             if (($this->modTS['actionAfterEditRecord'] ?? '') === 'recheck') {
@@ -181,7 +180,7 @@ class LinkValidatorController
 
         $prefix = 'check';
         $other = 'report';
-        if (empty($this->request->getParsedBody()['updateLinkList'] ?? false)) {
+        if (empty($request->getParsedBody()['updateLinkList'] ?? false)) {
             $prefix = 'report';
             $other = 'check';
         }
@@ -190,13 +189,13 @@ class LinkValidatorController
         $moduleData = $request->getAttribute('moduleData');
 
         // get information for last edited record
-        $this->lastEditedRecord['uid'] = $this->request->getQueryParams()['last_edited_record_uid'] ?? 0;
-        $this->lastEditedRecord['table'] = $this->request->getQueryParams()['last_edited_record_table'] ?? '';
-        $this->lastEditedRecord['field'] = $this->request->getQueryParams()['last_edited_record_field'] ?? '';
-        $this->lastEditedRecord['timestamp'] = $this->request->getQueryParams()['last_edited_record_timestamp'] ?? 0;
+        $this->lastEditedRecord['uid'] = $request->getQueryParams()['last_edited_record_uid'] ?? 0;
+        $this->lastEditedRecord['table'] = $request->getQueryParams()['last_edited_record_table'] ?? '';
+        $this->lastEditedRecord['field'] = $request->getQueryParams()['last_edited_record_field'] ?? '';
+        $this->lastEditedRecord['timestamp'] = $request->getQueryParams()['last_edited_record_timestamp'] ?? 0;
 
         // get searchLevel (number of levels of pages to check / show results)
-        $this->searchLevel[$prefix] = $this->request->getQueryParams()[$prefix . '_search_levels'] ?? $this->request->getParsedBody()[$prefix . '_search_levels'] ?? null;
+        $this->searchLevel[$prefix] = $request->getQueryParams()[$prefix . '_search_levels'] ?? $request->getParsedBody()[$prefix . '_search_levels'] ?? null;
 
         $mainSearchLevelKey = $prefix . '_searchlevel';
         $otherSearchLevelKey = $other . '_searchlevel';
@@ -210,8 +209,8 @@ class LinkValidatorController
         }
 
         // which linkTypes to check (internal, file, external, ...)
-        $set = $this->request->getParsedBody()[$prefix . '_SET'] ?? [];
-        $submittedValues = $this->request->getParsedBody()[$prefix . '_values'] ?? [];
+        $set = $request->getParsedBody()[$prefix . '_SET'] ?? [];
+        $submittedValues = $request->getParsedBody()[$prefix . '_values'] ?? [];
 
         foreach ($this->linktypeRegistry->getIdentifiers() as $linkType) {
             // Compile list of all available types. Used for checking with button "Check Links".
@@ -339,7 +338,7 @@ class LinkValidatorController
         $fieldLabel = $row['field'];
         $table = $row['table_name'];
         $languageService = $this->getLanguageService();
-        $hookObj = $this->linktypeRegistry->getLinktype($row['link_type'] ?? '');
+        $linkType = $this->linktypeRegistry->getLinktype($row['link_type'] ?? '');
 
         // Try to resolve the field label from TCA
         if ($GLOBALS['TCA'][$table]['types'][$row['element_type']]['columnsOverrides'][$row['field']]['label'] ?? false) {
@@ -353,15 +352,24 @@ class LinkValidatorController
         }
 
         $result = [
-            'title' => $table . ':' . $row['record_uid'],
-            'icon' => $this->iconFactory->getIconForRecord($table, $row, IconSize::SMALL)->render(),
-            'headline' => $row['headline'],
-            'label' => sprintf($languageService->sL('LLL:EXT:linkvalidator/Resources/Private/Language/Module/locallang.xlf:list.field'), $fieldLabel),
-            'path' => BackendUtility::getRecordPath($row['record_pid'], $this->getBackendUser()->getPagePermsClause(Permission::PAGE_SHOW), 0),
-            'linkTitle' => $row['link_title'],
-            'linkTarget' => $hookObj?->getBrokenUrl($row),
-            'linkStatus' => (bool)($row['url_response']['valid'] ?? false),
-            'linkMessage' => $hookObj?->getErrorMessage($row['url_response']['errorParams']),
+            'uid' => $row['uid'],
+            'recordUid' => $row['record_uid'],
+            'recordTable' => $table,
+            'recordTableTitle' => $languageService->sL($GLOBALS['TCA'][$table]['ctrl']['title'] ?? ''),
+            // @todo: Remove this assignment (and template use) when linkvalidator stops rendering broken
+            //        links registered to records that are meanwhile deleted=1 or in a different workspace.
+            'recordTableIconDefault' => $this->iconFactory->getIconForRecord($table, $row, IconSize::SMALL)->render(),
+            'recordFieldLabel' => $fieldLabel,
+            'recordTitle' => $row['headline'],
+            'recordLanguageIcon' => $this->iconFactory->getIcon($this->getSystemLanguageValue($row['language'], $row['record_pid'], 'flagIcon'), IconSize::SMALL)->getIdentifier(),
+            'recordLanguageTitle' => $this->getSystemLanguageValue($row['language'], $row['record_pid'], 'title'),
+            'backendUserTitleLength' => (int)$this->getBackendUser()->uc['titleLen'],
+            'recordData' => BackendUtility::getRecord($table, abs((int)$row['record_uid'])),
+            'recordPageData' => BackendUtility::getRecord('pages', abs((int)$row['record_pid'])),
+            'linkType' => $row['link_type'],
+            'linkText' => $row['link_title'],
+            'linkTarget' => $linkType?->getBrokenUrl($row),
+            'linkErrorMessage' => $linkType?->getErrorMessage($row['url_response']['errorParams']),
             'lastCheck' => sprintf(
                 $languageService->sL('LLL:EXT:linkvalidator/Resources/Private/Language/Module/locallang.xlf:list.msg.lastRun'),
                 date($GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'], $row['last_check']),
@@ -388,6 +396,23 @@ class LinkValidatorController
         $result['editUrlFull'] = (string)$this->uriBuilder->buildUriFromRoute('record_edit', $editUrlParameters);
         $result['editUrlField'] = (string)$this->uriBuilder->buildUriFromRoute('record_edit', array_merge($editUrlParameters, ['columnsOnly' => [$table => [$row['field']]]]));
         return $result;
+    }
+
+    /**
+     * Gets a named value of an available system language
+     *
+     * @param int $id system language uid
+     * @param int $pageId page id of a site
+     * @param string $key Name of the value to be fetched (e.g. title)
+     */
+    protected function getSystemLanguageValue(int $id, int $pageId, string $key): string
+    {
+        $value = '';
+        $systemLanguages = $this->translationConfigurationProvider->getSystemLanguages($pageId);
+        if (!empty($systemLanguages[$id][$key])) {
+            $value = $systemLanguages[$id][$key];
+        }
+        return $value;
     }
 
     /**
