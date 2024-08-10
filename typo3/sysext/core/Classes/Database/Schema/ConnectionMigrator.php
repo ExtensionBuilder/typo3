@@ -32,6 +32,8 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\UniqueConstraint;
 use Doctrine\DBAL\Types\BigIntType;
 use Doctrine\DBAL\Types\BinaryType;
+use Doctrine\DBAL\Types\BlobType;
+use Doctrine\DBAL\Types\DecimalType;
 use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\JsonType;
 use Doctrine\DBAL\Types\SmallIntType;
@@ -240,7 +242,7 @@ class ConnectionMigrator
         }
 
         // Build the schema definitions
-        $fromSchema = $this->connection->createSchemaManager()->introspectSchema();
+        $fromSchema = $this->buildExistingSchemaDefinitions();
         $toSchema = $this->buildExpectedSchemaDefinitions($this->connectionName);
 
         // Add current table options to the fromSchema
@@ -281,6 +283,28 @@ class ConnectionMigrator
         return $schemaDiff;
     }
 
+    protected function buildExistingSchemaDefinitions(): Schema
+    {
+        $platform = $this->connection->getDatabasePlatform();
+        $schema = $this->connection->createSchemaManager()->introspectSchema();
+        // Only MySQL has variable length versions of TEXT/BLOB.
+        // Move the platform into the foreach loop as soon as more normalization needs to be applied, taking it
+        // now as early avoiding the loop.
+        if ($platform instanceof DoctrineMariaDBPlatform || $platform instanceof DoctrineMySQLPlatform) {
+            foreach ($schema->getTables() as $table) {
+                foreach ($table->getColumns() as $column) {
+                    $columnType = $column->getType();
+                    if ($columnType instanceof BlobType || $columnType instanceof TextType) {
+                        // Doctrine does not provide a length for LONGTEXT/LONGBLOB columns, thus
+                        // ensuring a default length. This is essential for column comparison.
+                        $column->setLength($column->getLength() ?? 2147483647);
+                    }
+                }
+            }
+        }
+        return $schema;
+    }
+
     /**
      * Build the expected schema definitions from raw SQL statements.
      *
@@ -289,6 +313,11 @@ class ConnectionMigrator
      */
     protected function buildExpectedSchemaDefinitions(string $connectionName): Schema
     {
+        $schemaConfig = new SchemaConfig();
+        $schemaConfig->setName($this->connection->getDatabase());
+        if (isset($this->connection->getParams()['defaultTableOptions'])) {
+            $schemaConfig->setDefaultTableOptions($this->connection->getParams()['defaultTableOptions']);
+        }
         /** @var Table[] $tablesForConnection */
         $tablesForConnection = [];
         foreach ($this->tables as $table) {
@@ -298,15 +327,10 @@ class ConnectionMigrator
             if ($connectionName !== $this->getConnectionNameForTable($tableName)) {
                 continue;
             }
-
+            $table->setSchemaConfig($schemaConfig);
             $tablesForConnection[$tableName] = $table;
         }
-        $tablesForConnection = $this->transformTablesForDatabasePlatform($tablesForConnection, $this->connection);
-        $schemaConfig = new SchemaConfig();
-        $schemaConfig->setName($this->connection->getDatabase());
-        if (isset($this->connection->getParams()['defaultTableOptions'])) {
-            $schemaConfig->setDefaultTableOptions($this->connection->getParams()['defaultTableOptions']);
-        }
+        $tablesForConnection = $this->normalizeTablesForTargetConnection($this->connection, $schemaConfig, $tablesForConnection);
         return new Schema($tablesForConnection, [], $schemaConfig);
     }
 
@@ -1398,68 +1422,6 @@ class ConnectionMigrator
     }
 
     /**
-     * Transform the table information to conform to specific
-     * requirements of different database platforms like removing
-     * the index substring length for Non-MySQL Platforms.
-     *
-     * @param Table[] $tables
-     * @return Table[]
-     * @throws \InvalidArgumentException
-     */
-    protected function transformTablesForDatabasePlatform(array $tables, Typo3Connection $connection): array
-    {
-        $defaultTableOptions = $connection->getParams()['defaultTableOptions'] ?? [];
-        $tables = $this->normalizeTablesForTargetConnection($tables, $connection);
-        foreach ($tables as &$table) {
-            $indexes = [];
-            foreach ($table->getIndexes() as $key => $index) {
-                $indexName = $index->getName();
-                // PostgreSQL and sqlite require index names to be unique per database/schema.
-                $platform = $connection->getDatabasePlatform();
-                if ($platform instanceof DoctrinePostgreSQLPlatform || $platform instanceof DoctrineSQLitePlatform) {
-                    $indexName = $indexName . '_' . hash('crc32b', $table->getName() . '_' . $indexName);
-                }
-
-                // Remove the length information from column names for indexes if required.
-                $cleanedColumnNames = array_map(
-                    static function (string $columnName) use ($connection): string {
-                        $platform = $connection->getDatabasePlatform();
-                        if ($platform instanceof DoctrineMariaDBPlatform || $platform instanceof DoctrineMySQLPlatform) {
-                            // Returning the unquoted, unmodified version of the column name since
-                            // it can include the length information for BLOB/TEXT columns which
-                            // may not be quoted.
-                            return $columnName;
-                        }
-
-                        return $connection->quoteIdentifier(preg_replace('/\(\d+\)$/', '', $columnName));
-                    },
-                    $index->getUnquotedColumns()
-                );
-
-                $indexes[$key] = new Index(
-                    $connection->quoteIdentifier($indexName),
-                    $cleanedColumnNames,
-                    $index->isUnique(),
-                    $index->isPrimary(),
-                    $index->getFlags(),
-                    $index->getOptions()
-                );
-            }
-
-            $table = new Table(
-                $table->getQuotedName($connection->getDatabasePlatform()),
-                $table->getColumns(),
-                $indexes,
-                [],
-                $table->getForeignKeys(),
-                array_merge($defaultTableOptions, $table->getOptions())
-            );
-        }
-
-        return $tables;
-    }
-
-    /**
      * Get COLLATION, ROW_FORMAT, COMMENT and ENGINE table options on MySQL connections.
      *
      * @param string[] $tableNames
@@ -1652,18 +1614,21 @@ class ConnectionMigrator
      * @see https://github.com/doctrine/dbal/blob/4.0.x/UPGRADE.md#bc-break-changes-in-handling-string-and-binary-columns [3]
      *
      * @param Table[] $tables
-     * @param Typo3Connection $connection
      * @return Table[]
      * @throws DBALException
      */
-    protected function normalizeTablesForTargetConnection(array $tables, Typo3Connection $connection): array
+    protected function normalizeTablesForTargetConnection(Typo3Connection $connection, SchemaConfig $schemaConfig, array $tables): array
     {
         $databasePlatform = $connection->getDatabasePlatform();
-        array_walk($tables, function (Table &$table) use ($databasePlatform): void {
+        array_walk($tables, function (Table &$table) use ($connection, $databasePlatform, $schemaConfig): void {
+            $table->setSchemaConfig($schemaConfig);
             $this->normalizeTableIdentifiers($databasePlatform, $table);
+            $this->applyDefaultPlatformOptionsToColumns($databasePlatform, $schemaConfig, $table);
+            $this->normalizeDecimalTypeColumnDefaultValue($databasePlatform, $table);
             $this->normalizeTableForMariaDBOrMySQL($databasePlatform, $table);
             $this->normalizeTableForPostgreSQL($databasePlatform, $table);
             $this->normalizeTableForSQLite($databasePlatform, $table);
+            $this->normalizeTableIndex($databasePlatform, $connection, $schemaConfig, $table);
         });
 
         return $tables;
@@ -1689,6 +1654,60 @@ class ConnectionMigrator
             // options
             $table->getOptions(),
         );
+    }
+
+    protected function applyDefaultPlatformOptionsToColumns(AbstractPlatform $platform, SchemaConfig $schemaConfig, Table $table): void
+    {
+        $defaultTableOptions = $schemaConfig->getDefaultTableOptions();
+        $defaultColumnCollation = $defaultTableOptions['collation'] ?? $defaultTableOptions['collate'] ?? '';
+        $defaultColumCharset = $defaultTableOptions['charset'] ?? '';
+        foreach ($table->getColumns() as $column) {
+            $columnType = $column->getType();
+            if (($platform instanceof DoctrineMariaDBPlatform || $platform instanceof DoctrineMySQLPlatform)
+                && (($columnType instanceof StringType || $columnType instanceof TextType))
+            ) {
+                $columnCollation = (string)($column->getPlatformOptions()['collation'] ?? '');
+                $columnCharset = (string)($column->getPlatformOptions()['charset'] ?? '');
+                if ($defaultColumnCollation !== '' && $columnCollation === '') {
+                    $column->setPlatformOption('collation', $defaultColumnCollation);
+                }
+                if ($defaultColumCharset !== '' && $columnCharset === '') {
+                    $column->setPlatformOption('charset', $defaultColumCharset);
+                }
+            }
+            if ($platform instanceof DoctrineSQLitePlatform
+                && ($columnType instanceof StringType || $columnType instanceof TextType || $columnType instanceof JsonType)
+            ) {
+                $column->setPlatformOption('collation', 'BINARY');
+            }
+        }
+    }
+
+    /**
+     * Normalize DecimalType fields default values to have the correct format defined by the column
+     * scale settings to ensure working comparison with Doctrine DBAL v4 {@see AbstractPlatform::columnsEqual()}.
+     */
+    protected function normalizeDecimalTypeColumnDefaultValue(AbstractPlatform $platform, Table $table): void
+    {
+        if (!($platform instanceof DoctrineMariaDBPlatform || $platform instanceof DoctrineMySQLPlatform)) {
+            return;
+        }
+        foreach ($table->getColumns() as $column) {
+            $columnType = $column->getType();
+            if (!($columnType instanceof DecimalType)) {
+                continue;
+            }
+            if (!$column->getNotnull() && $column->getDefault() === null) {
+                continue;
+            }
+            $column->setDefault(number_format(
+                (float)$column->getDefault(),
+                // Scale defines the count of decimal digits after the decimal separator
+                $column->getScale(),
+                '.',
+                '',
+            ));
+        }
     }
 
     /**
@@ -1797,7 +1816,7 @@ class ConnectionMigrator
                 // @todo why do we need this with Doctrine DBAL 4 ???
                 $column->setUnsigned(false);
             }
-            $columnData = $column->toArray();
+            $columnData = $this->prepareColumnOptions($column);
             unset($columnData['name'], $columnData['type']);
             $normalizedColumns[] = new Column(
                 // name
@@ -1827,23 +1846,19 @@ class ConnectionMigrator
         if (!($databasePlatform instanceof DoctrineMariaDBPlatform || $databasePlatform instanceof DoctrineMySQLPlatform)) {
             return;
         }
-
         foreach ($table->getColumns() as $column) {
-            if (!($column->getType() instanceof StringType || $column->getType() instanceof BinaryType)) {
-                continue;
-            }
-            if ($column->getLength() !== null) {
-                // Ensure not to exceed the maximum varchar or binary length
+            $columnType = $column->getType();
+            if ($columnType instanceof StringType || $columnType instanceof BinaryType) {
+                $column->setLength($column->getLength() ?? 255);
                 if ($column->getLength() > 4000) {
-                    // @todo Should a exception be thrown for this case ?
                     $column->setLength(4000);
                 }
-                continue;
             }
-
-            // 255 has been the removed `AbstractPlatform->getVarcharDefaultLength()` and
-            // `AbstractPlatform->getBinaryMaxLength()` value
-            $column->setLength(255);
+            if ($columnType instanceof BlobType || $columnType instanceof TextType) {
+                // Doctrine does not provide a length for LONGTEXT/LONGBLOB columns, thus
+                // ensuring a default length. This is essential for column comparison.
+                $column->setLength($column->getLength() ?? 2147483647);
+            }
         }
     }
 
@@ -1912,6 +1927,49 @@ class ConnectionMigrator
         ) {
             $singlePrimaryKeyColumn->setAutoincrement(true);
         }
+    }
+
+    protected function normalizeTableIndex(AbstractPlatform $platform, Typo3Connection $connection, SchemaConfig $schemaConfig, Table &$table): void
+    {
+        $indexes = [];
+        foreach ($table->getIndexes() as $key => $index) {
+            $indexName = $index->getName();
+            // PostgreSQL and sqlite require index names to be unique per database/schema.
+            if ($platform instanceof DoctrinePostgreSQLPlatform || $platform instanceof DoctrineSQLitePlatform) {
+                $indexName = $indexName . '_' . hash('crc32b', $table->getName() . '_' . $indexName);
+            }
+            // Remove the length information from column names for indexes if required.
+            $cleanedColumnNames = array_map(
+                static function (string $columnName) use ($connection): string {
+                    $platform = $connection->getDatabasePlatform();
+                    if ($platform instanceof DoctrineMariaDBPlatform || $platform instanceof DoctrineMySQLPlatform) {
+                        // Returning the unquoted, unmodified version of the column name since
+                        // it can include the length information for BLOB/TEXT columns which
+                        // may not be quoted.
+                        return $columnName;
+                    }
+                    return $connection->quoteIdentifier(preg_replace('/\(\d+\)$/', '', $columnName));
+                },
+                $index->getUnquotedColumns()
+            );
+            $indexes[$key] = new Index(
+                $connection->quoteIdentifier($indexName),
+                $cleanedColumnNames,
+                $index->isUnique(),
+                $index->isPrimary(),
+                $index->getFlags(),
+                $index->getOptions()
+            );
+        }
+        $table = new Table(
+            $table->getQuotedName($connection->getDatabasePlatform()),
+            $table->getColumns(),
+            $indexes,
+            [],
+            $table->getForeignKeys(),
+            array_merge($schemaConfig->getDefaultTableOptions(), $table->getOptions())
+        );
+        $table->setSchemaConfig($schemaConfig);
     }
 
     /**
