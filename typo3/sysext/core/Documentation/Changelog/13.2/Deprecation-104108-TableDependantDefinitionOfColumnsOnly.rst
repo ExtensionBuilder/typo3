@@ -19,7 +19,7 @@ by adding the fields to be rendered as a comma-separated list.
 However, besides rendering only records form a single table, the edit form
 is also capable of rendering records of different tables in the same request.
 
-Therefore, the limit fields funcionality has been extended to allow
+Therefore, the limit fields functionality has been extended to allow
 set the fields to be rendered on a per-table basis. This means that
 passing just a comma-separated list of fields as value for `columnsOnly`
 has been deprecated.
@@ -45,7 +45,7 @@ Migration
 The field to be rendered have to be passed as :php:`array` under the
 corresponding table name.
 
-An example, buidling such link using the `UriBuilder`:
+An example, building such link using the `UriBuilder`:
 
 .. code-block:: php
 
