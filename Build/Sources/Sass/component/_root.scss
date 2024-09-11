@@ -38,6 +38,10 @@
     // Header
     --typo3-header-font-family: "Source Sans 3", sans-serif;
 
+    // Z-Index
+    --typo3-zindex-modal-backdrop: 1050;
+    --typo3-zindex-modal: 1055;
+
     // Colors
     --typo3-text-color-base: light-dark(var(--token-color-neutral-90), var(--token-color-neutral-10));
     --typo3-text-color-link: var(--typo3-text-color-base);
@@ -309,10 +313,34 @@
 
 [data-color-scheme="dark"] {
     color-scheme: only dark;
+
+    & .nodes-container,
+    & .tree-toolbar,
+    & .dropdown-menu,
+    & .scaffold-content-navigation-drag,
+    & .scaffold-content-navigation-switcher,
+    & .alwan,
+    & .context-menu,
+    & .flatpickr-calendar,
+    & .dragging-tooltip {
+        color-scheme: only dark;
+    }
 }
 
 [data-color-scheme="light"] {
     color-scheme: only light;
+
+    & .nodes-container,
+    & .tree-toolbar,
+    & .dropdown-menu,
+    & .scaffold-content-navigation-drag,
+    & .scaffold-content-navigation-switcher,
+    & .alwan,
+    & .context-menu,
+    & .flatpickr-calendar,
+    & .dragging-tooltip {
+        color-scheme: only light;
+    }
 }
 
 //
