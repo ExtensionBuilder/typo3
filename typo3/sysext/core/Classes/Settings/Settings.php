@@ -34,7 +34,7 @@ readonly class Settings implements SettingsInterface
     public function get(string $identifier): mixed
     {
         if (!$this->has($identifier)) {
-            throw new \InvalidArgumentException('Setting does not exist', 1709555772);
+            throw new SettingNotFoundException('Setting does not exist', 1709555772);
         }
         return $this->settings[$identifier];
     }
@@ -44,8 +44,9 @@ readonly class Settings implements SettingsInterface
         return array_keys($this->settings);
     }
 
-    public static function __set_state(array $state): self
+    public static function __set_state(array $state): static
     {
-        return new self(...$state);
+        /** @phpstan-ignore-next-line Usage is safe because state is exported by PHP var_export() from the static instance */
+        return new static(...$state);
     }
 }
