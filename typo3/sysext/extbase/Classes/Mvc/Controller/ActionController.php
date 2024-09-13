@@ -55,10 +55,12 @@ use TYPO3\CMS\Extbase\Property\PropertyMapper;
 use TYPO3\CMS\Extbase\Reflection\ReflectionService;
 use TYPO3\CMS\Extbase\Security\HashScope;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
+use TYPO3\CMS\Extbase\Service\FileHandlingService;
 use TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\ValidatorInterface;
 use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
 use TYPO3\CMS\Fluid\View\TemplatePaths;
+use TYPO3\CMS\Frontend\Controller\ErrorController;
 use TYPO3Fluid\Fluid\View\AbstractTemplateView;
 use TYPO3Fluid\Fluid\View\ViewInterface as FluidStandaloneViewInterface;
 
@@ -110,6 +112,7 @@ abstract class ActionController implements ControllerInterface
 
     protected MvcPropertyMappingConfigurationService $mvcPropertyMappingConfigurationService;
     protected EventDispatcherInterface $eventDispatcher;
+    protected FileHandlingService $fileHandlingService;
     protected RequestInterface $request;
     protected UriBuilder $uriBuilder;
 
@@ -212,6 +215,11 @@ abstract class ActionController implements ControllerInterface
     public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
+    }
+
+    public function injectFileHandlingService(FileHandlingService $fileHandlingService): void
+    {
+        $this->fileHandlingService = $fileHandlingService;
     }
 
     /**
@@ -364,6 +372,7 @@ abstract class ActionController implements ControllerInterface
         $this->initializeActionMethodArguments();
         $this->initializeActionMethodValidators();
         $this->mvcPropertyMappingConfigurationService->initializePropertyMappingConfigurationFromRequest($request, $this->arguments);
+        $this->fileHandlingService->initializeFileUploadConfigurationsFromRequest($request, $this->arguments);
         $this->initializeAction();
         $actionInitializationMethodName = 'initialize' . ucfirst($this->actionMethodName);
         /** @var callable $callable */
@@ -448,13 +457,17 @@ abstract class ActionController implements ControllerInterface
         // incoming request is not needed yet but can be passed into the action in the future like in symfony
         // todo: support this via method-reflection
 
-        $preparedArguments = [];
-        /** @var Argument $argument */
-        foreach ($this->arguments as $argument) {
-            $preparedArguments[] = $argument->getValue();
-        }
+        $this->fileHandlingService->initializeFileUploadDeletionConfigurationsFromRequest($request, $this->arguments);
         $validationResult = $this->arguments->validate();
         if (!$validationResult->hasErrors()) {
+            $preparedArguments = [];
+            /** @var Argument $argument */
+            foreach ($this->arguments as $argument) {
+                $this->fileHandlingService->applyDeletionsToArgument($argument);
+                $this->fileHandlingService->mapUploadedFilesToArgument($argument);
+                $preparedArguments[] = $argument->getValue();
+            }
+
             $this->eventDispatcher->dispatch(new BeforeActionCallEvent(static::class, $this->actionMethodName, $preparedArguments));
             $actionResult = $this->{$this->actionMethodName}(...$preparedArguments);
         } else {
@@ -795,22 +808,58 @@ abstract class ActionController implements ControllerInterface
     }
 
     /**
-     * Maps arguments delivered by the request object to the local controller arguments.
+     * This method processes exceptions that occur due to missing or not found targets or arguments during argument
+     * mapping. Based on configuration settings, either a "page not found" response is triggered or the original
+     * exception is propagated.
      *
-     * @throws Exception\RequiredArgumentMissingException
+     * Extension authors can override this function to implement additional/custom argument mapping exception handling
+     */
+    protected function handleArgumentMappingExceptions(\Exception $exception): void
+    {
+        $configuration = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
+        );
+
+        $handleTargetNotFoundException = $exception instanceof TargetNotFoundException &&
+            (bool)($configuration['mvc']['showPageNotFoundIfTargetNotFoundException'] ?? false);
+        $handleRequiredArgumentMissingException = $exception instanceof RequiredArgumentMissingException &&
+            (bool)($configuration['mvc']['showPageNotFoundIfRequiredArgumentIsMissingException'] ?? false);
+
+        if ($handleTargetNotFoundException || $handleRequiredArgumentMissingException) {
+            $response = GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
+                $this->request,
+                $exception->getMessage()
+            );
+            throw new PropagateResponseException($response, 1720242346);
+        }
+
+        throw $exception;
+    }
+
+    /**
+     * Maps arguments delivered by the request object to the local controller arguments.
      *
      * @internal
      */
     protected function mapRequestArgumentsToControllerArguments(): void
     {
-        /** @var Argument $argument */
-        foreach ($this->arguments as $argument) {
-            $argumentName = $argument->getName();
-            if ($this->request->hasArgument($argumentName)) {
-                $this->setArgumentValue($argument, $this->request->getArgument($argumentName));
-            } elseif ($argument->isRequired()) {
-                throw new RequiredArgumentMissingException('Required argument "' . $argumentName . '" is not set for ' . $this->request->getControllerObjectName() . '->' . $this->request->getControllerActionName() . '.', 1298012500);
+        try {
+            /** @var Argument $argument */
+            foreach ($this->arguments as $argument) {
+                $argumentName = $argument->getName();
+                if ($this->request->hasArgument($argumentName)) {
+                    $this->setArgumentValue($argument, $this->request->getArgument($argumentName));
+                } elseif ($argument->isRequired()) {
+                    throw new RequiredArgumentMissingException('Required argument "' . $argumentName . '" is not set for ' . $this->request->getControllerObjectName() . '->' . $this->request->getControllerActionName() . '.', 1298012500);
+                }
+
+                if ($this->request->getMethod() === 'POST') {
+                    $uploadedFiles = $this->request->getUploadedFiles()[$argumentName] ?? [];
+                    $argument->setUploadedFiles($uploadedFiles);
+                }
             }
+        } catch (\Exception $exception) {
+            $this->handleArgumentMappingExceptions($exception);
         }
     }
 
