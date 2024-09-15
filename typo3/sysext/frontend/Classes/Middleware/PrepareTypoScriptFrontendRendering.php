@@ -126,6 +126,7 @@ final readonly class PrepareTypoScriptFrontendRendering implements MiddlewareInt
             $controller->content = $pageCacheRow['content'];
             $controller->setContentType($pageCacheRow['contentType']);
             $controller->cacheGenerated = $pageCacheRow['tstamp'];
+            $controller->cacheExpires = $pageCacheRow['expires'];
             $controller->pageContentWasLoadedFromCache = true;
             $pageContentWasLoadedFromCache = true;
 
