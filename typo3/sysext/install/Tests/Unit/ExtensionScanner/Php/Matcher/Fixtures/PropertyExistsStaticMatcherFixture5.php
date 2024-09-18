@@ -15,6 +15,10 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Extbase\Tests\Fixture\ClassWithGettersAndSetters;
+namespace TYPO3\CMS\Install\Tests\Unit\ExtensionScanner\Php\Matcher\Fixtures;
 
-class Tx_Extbase_Tests_Fixture_TxClassWithGettersAndSetters extends ClassWithGettersAndSetters {}
+class PropertyExistsStaticMatcherFixture5
+{
+    // Not a match: Not static
+    public $iAmAMatch;
+}

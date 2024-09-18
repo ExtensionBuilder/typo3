@@ -15,4 +15,15 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-class ext_update {}
+namespace TYPO3\CMS\Install\Tests\Unit\ExtensionScanner\Php\Matcher\Fixtures;
+
+class PropertyExistsStaticMatcherFixture1
+{
+    protected static $iAmAMatch = 42;
+
+    protected static $iAmNotAMatch;
+
+    public static $iAmNotAMatchEither;
+
+    private static $iAmNoMatchToo;
+}

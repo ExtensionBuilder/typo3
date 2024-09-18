@@ -15,17 +15,17 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace TYPO3\CMS\Extbase\Tests\Fixture;
+namespace TYPO3\CMS\Install\Tests\Unit\ExtensionScanner\Php\Matcher\Fixtures;
 
-/**
- * A slot
- */
-class SlotFixture
+class PropertyExistsStaticMatcherFixture4
 {
     /**
-     * @return mixed
+     * Not a match: suppressed
      *
-     * Do not define a return typehint here.
+     * @extensionScannerIgnoreLine
+     * @var string|null
      */
-    public function slot() {}
+    public static $iAmAMatch;
+    // Match (again). No longer ignored.
+    public static $iAmAnUnignoredMatch;
 }

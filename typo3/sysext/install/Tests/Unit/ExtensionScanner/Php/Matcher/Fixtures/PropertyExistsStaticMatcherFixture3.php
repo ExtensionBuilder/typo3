@@ -15,9 +15,13 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace TYPO3\CMS\Extbase\Tests\Fixture;
+namespace TYPO3\CMS\Install\Tests\Unit\ExtensionScanner\Php\Matcher\Fixtures;
 
-/**
- * Second Dummy Class
- */
-class SecondDummyClass {}
+class PropertyExistsStaticMatcherFixture3
+{
+    // Not a match: suppressed
+    // @extensionScannerIgnoreLine
+    public static $iAmAMatch;
+    // Match (again). No longer ignored.
+    public static $iAmAnUnignoredMatch;
+}
