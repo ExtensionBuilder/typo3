@@ -2620,6 +2620,7 @@ typo3-backend-formengine-suggest-result-item .formengine-suggest-result-item-lab
 .input-group{position:relative;display:flex;flex-wrap:wrap;align-items:stretch;width:100%;border-radius:var(--typo3-input-border-radius)}
 .input-group>.form-control,.input-group>.form-control-clearable-wrapper,.input-group>.form-floating,.input-group>.form-select{position:relative;flex:1 1 auto;width:1%;min-width:0}
 .input-group>.form-control:focus,.input-group>.form-floating:focus-within,.input-group>.form-select:focus{z-index:5}
+.input-group>.input-group-text>.form-check-type-toggle{margin-bottom:0}
 .input-group .btn{position:relative;z-index:2}
 .input-group .btn:focus{z-index:5}
 .input-group-text{display:flex;align-items:center;min-width:2.5rem;padding:var(--typo3-input-padding-y) var(--typo3-input-padding-x);font-size:var(--typo3-input-font-size);font-weight:400;line-height:var(--typo3-input-line-height);color:var(--typo3-input-color);text-align:center;white-space:nowrap;background-color:var(--typo3-input-group-addon-bg);border:var(--typo3-input-border-width) solid var(--typo3-input-border-color);border-radius:var(--typo3-input-border-radius)}
@@ -3994,14 +3995,18 @@ td.permission-column-group{padding-inline-start:0;width:200px;white-space:nowrap
 .access-legend .hr span{width:20px;height:1px;background:#000;display:block;margin-top:-1px;margin-inline-start:-4px}
 .access-legend .t3-vr span{width:1px;height:20px;background:#000;margin-top:-2px;margin-inline-start:6px;display:block}
 @media (min-width:992px){
-.beuser-comparison__table{table-layout:fixed}
+.beuser-comparison-table{table-layout:fixed}
 }
 @media (min-width:992px){
-.beuser-comparison__table td,.beuser-comparison__table th{-moz-column-width:auto;column-width:auto}
+.beuser-comparison-table td,.beuser-comparison-table th{-moz-column-width:auto;column-width:auto}
 }
-.beuser-comparison__table th[scope=row]{white-space:wrap}
+.beuser-comparison-table th[scope=row]{white-space:wrap}
 .beuser-comparison-element{display:flex;align-items:flex-start;gap:var(--typo3-spacing)}
 .beuser-comparison-element__title{flex-grow:1;white-space:wrap;word-break:break-word;padding-top:calc(var(--typo3-input-border-width) + var(--typo3-input-sm-padding-y))}
+.beuser-online-table tbody:nth-of-type(2n+1)>tr>*{--bs-table-bg-type:var(--bs-table-striped-bg);--bs-table-color-type:var(--bs-table-striped-color)}
+.beuser-online-table tbody tr:hover td,.beuser-online-table tbody:hover td[rowspan]{--bs-table-bg-type:var(--bs-table-hover-bg);--bs-table-color-type:var(--bs-table-hover-color)}
+.beuser-online-table .beuser-online-table_row td:first-child{padding-inline-start:.5rem}
+.beuser-online-table td.col-datetime span{margin-left:.5rem}
 .extensionmanager-is-loading{opacity:0!important}
 .extensionmanager-is-hidden{display:none!important}
 .extensionmanager-is-shown{display:block!important}
@@ -4052,7 +4057,7 @@ td.permission-column-group{padding-inline-start:0;width:200px;white-space:nowrap
 .install-tool-modal .list-group-item a{display:block}
 .install-tool-modal .list-group-item.active a{color:#fff}
 .install-tool-modal .table .t3-languagePacks-inactive,.install-tool-modal .table .t3-languagePacks-inactive td{color:#aaa}
-.install-tool-modal .t3-install-displaytwinimageimages{border:1px solid #ccc;border-radius:4px;padding:10px;margin-bottom:var(--typo3-spacing)}
+.install-tool-modal .t3-install-displaytwinimageimages{border:var(--typo3-component-border-width) solid var(--typo3-component-border-color);border-radius:var(--typo3-component-border-radius);padding:var(--typo3-component-padding-y) var(--typo3-component-padding-x);margin-bottom:var(--typo3-spacing)}
 .install-tool-modal .t3-install-displaytwinimagetextarea pre{border-top:0}
 .install-tool-modal .bg-transparent-emulation{padding:10px;text-align:center;background:url(../Images/bg_transparent_emulation.png)}
 .install-tool-modal .bg-transparent-emulation img{max-width:300px}
