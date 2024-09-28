@@ -2159,6 +2159,27 @@ class BackendUtility
                             true
                         );
                         break;
+                    case 'updateColorScheme':
+                        $details['html'][] = ImmediateActionElement::dispatchCustomEvent(
+                            'typo3:color-scheme:update',
+                            ['colorScheme' => $val['parameter']],
+                            true
+                        );
+                        break;
+                    case 'updateTheme':
+                        $details['html'][] = ImmediateActionElement::dispatchCustomEvent(
+                            'typo3:theme:update',
+                            ['theme' => $val['parameter']],
+                            true
+                        );
+                        break;
+                    case 'updateSystemInformationMenu':
+                        $details['html'][] = ImmediateActionElement::dispatchCustomEvent(
+                            'typo3:system-information-menu:update',
+                            null,
+                            true
+                        );
+                        break;
                     case 'updateModuleMenu':
                         $details['html'][] = ImmediateActionElement::forAction(
                             'TYPO3.ModuleMenu.App.refreshMenu',

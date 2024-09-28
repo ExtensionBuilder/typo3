@@ -73,6 +73,8 @@ class SetupModuleController
     protected array $overrideConf = [];
     protected bool $languageUpdate = false;
     protected bool $pagetreeNeedsRefresh = false;
+    protected bool $colorSchemeChanged = false;
+    protected bool $themeChanged = false;
     protected array $tsFieldConf = [];
     protected int $passwordIsUpdated = self::PASSWORD_NOT_UPDATED;
     protected bool $passwordIsSubmitted = false;
@@ -116,6 +118,12 @@ class SetupModuleController
         $this->storeIncomingData($request);
         if ($this->pagetreeNeedsRefresh) {
             BackendUtility::setUpdateSignal('updatePageTree');
+        }
+        if ($this->colorSchemeChanged) {
+            BackendUtility::setUpdateSignal('updateColorScheme', $this->getBackendUser()->uc['colorScheme']);
+        }
+        if ($this->themeChanged) {
+            BackendUtility::setUpdateSignal('updateTheme', $this->getBackendUser()->uc['theme']);
         }
         $formProtection = $this->formProtectionFactory->createFromRequest($request);
         $this->addFlashMessages($view);
@@ -198,6 +206,12 @@ class SetupModuleController
             if (isset($d['titleLen']) && $d['titleLen'] !== $backendUser->uc['titleLen']) {
                 $this->pagetreeNeedsRefresh = true;
             }
+            if (isset($d['colorScheme']) && $d['colorScheme'] !== ($backendUser->uc['colorScheme'] ?? null)) {
+                $this->colorSchemeChanged = true;
+            }
+            if (isset($d['theme']) && $d['theme'] !== ($backendUser->uc['theme'] ?? null)) {
+                $this->themeChanged = true;
+            }
             if ($d['setValuesToDefault']) {
                 // If every value should be default
                 $backendUser->resetUC();
@@ -233,7 +247,7 @@ class SetupModuleController
                     $params = ['be_user_data' => &$be_user_data];
                     GeneralUtility::callUserFunction($function, $params, $this);
                 }
-                $this->passwordIsSubmitted = (string)$be_user_data['password'] !== '';
+                $this->passwordIsSubmitted = (string)($be_user_data['password'] ?? '') !== '';
                 $passwordIsConfirmed = $this->passwordIsSubmitted && $be_user_data['password'] === $be_user_data['password2'];
 
                 // Validate password against password policy
