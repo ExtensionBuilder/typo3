@@ -134,11 +134,9 @@ class ConnectionPool
                 1459422492
             );
         }
-
         if (empty($connectionParams['wrapperClass'])) {
             $connectionParams['wrapperClass'] = Connection::class;
         }
-
         if (!is_a($connectionParams['wrapperClass'], Connection::class, true)) {
             throw new \UnexpectedValueException(
                 'The "wrapperClass" for the connection name "' . $connectionName .
@@ -146,25 +144,130 @@ class ConnectionPool
                 1459422968
             );
         }
-
-        // Transform TYPO3 `tableoptions` to valid `doctrine/dbal` connection param option `defaultTableOptions`
-        // @todo TYPO3 database configuration should be changed to directly write defaultTableOptions instead,
-        //       with proper upgrade migration. Along with that, default table options for MySQL in
-        //       testing-framework and core should be adjusted.
-        if (isset($connectionParams['tableoptions'])) {
-            $connectionParams['defaultTableOptions'] = array_replace(
-                $connectionParams['defaultTableOptions'] ?? [],
-                $connectionParams['tableoptions']
-            );
-            unset($connectionParams['tableoptions']);
-        }
-
         // Ensure integer value for port.
         if (array_key_exists('port', $connectionParams)) {
             $connectionParams['port'] = (int)($connectionParams['port'] ?? 0);
         }
+        return $this->migrateConnectionParams($connectionName, $connectionParams);
+    }
 
-        return $connectionParams;
+    private function migrateConnectionParams(string $connectionName, array $params): array
+    {
+        $params['defaultTableOptions'] ??= [];
+        $params = $this->migrateTableOptionsToDefaultTableOptions($connectionName, $params);
+        $params = $this->migrateDefaultTableOptionCollateToCollation($connectionName, $params);
+        $params = $this->removeInvalidConnectionParams($params);
+        return $this->ensureDefaultConnectionCharset($params);
+    }
+
+    /**
+     * Migrate old `tableoptions` to `defaultTableOptions` on MariaDB/MySQL connections.
+     * Note `tableoptions` overrides `defaultTableOptions` for now.
+     *
+     * @deprecated since 13.4 and will be removed in v14.
+    */
+    private function migrateTableOptionsToDefaultTableOptions(string $connectionName, array $params): array
+    {
+        $params['defaultTableOptions'] ??= [];
+        if (array_key_exists('tableoptions', $params)
+            && is_array($params['tableoptions'])
+            && $params['tableoptions'] !== []
+        ) {
+            trigger_error(
+                sprintf(
+                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'DB\'][\'Connections\'][\'%s\'][\'tableoptions\'] '
+                    . 'is deprecated since v13 and will be ignored in v14. Use '
+                    . '$GLOBALS[\'TYPO3_CONF_VARS\'][\'DB\'][\'Connections\'][\'%s\'][\'defaultTableOptions\'] '
+                    . 'instead. Note in v13 the deprecated key still takes precedence over the new key if set.',
+                    $connectionName,
+                    $connectionName,
+                ),
+                E_USER_DEPRECATED,
+            );
+            $params['defaultTableOptions'] = array_replace(
+                $params['defaultTableOptions'],
+                $params['tableoptions'],
+            );
+            unset($params['tableoptions']);
+        }
+        return $params;
+    }
+
+    /**
+     * Transform deprecated `collate` option to `collation` for `defaultTableOptions` on MySQL/MariaDB connections.
+     * Note that `collate` overrides manual set `collation` for now.
+     *
+     * @link https://github.com/doctrine/dbal/pull/5246
+     * @deprecated since 13.4 and will be removed in v14.
+     */
+    private function migrateDefaultTableOptionCollateToCollation(string $connectionName, array $params): array
+    {
+        $params['defaultTableOptions'] ??= [];
+        if (array_key_exists('defaultTableOptions', $params)
+            && is_array($params['defaultTableOptions'])
+            && array_key_exists('collate', $params['defaultTableOptions'])
+            && is_string($params['defaultTableOptions']['collate'])
+            && $params['defaultTableOptions']['collate'] !== ''
+        ) {
+            trigger_error(
+                sprintf(
+                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'DB\'][\'Connections\'][\'%s\'][\'defaultTableOptions\'][\'collate\'] '
+                    . 'is deprecated since v13 and will be ignored in v14. Set "collation" instead. Note "collate" overrides '
+                    . '"collation" in v13.',
+                    $connectionName,
+                ),
+                E_USER_DEPRECATED,
+            );
+            $params['defaultTableOptions']['collation'] = $params['defaultTableOptions']['collate'];
+            unset($params['defaultTableOptions']['collate']);
+        }
+        return $params;
+    }
+
+    /**
+     * Clean up invalid connection parameters.
+     */
+    private function removeInvalidConnectionParams(array $params): array
+    {
+        // Remove defaultTableOptions for unsupported databases
+        unset($params['tableoptions']);
+        // Ensure to remove `defaultTableOptions` for drivers not supporting it.
+        if (!in_array((string)($params['driver'] ?? ''), ['mysqli', 'pdo_mysql'], true)) {
+            unset($params['defaultTableOptions']);
+            return $params;
+        }
+        // Note that `engine` added as allowed, as it could have been configured already and used within the
+        // database analyzer. Not documented yet as feature or used by TYPO3 to define it a engine as system
+        // default. Allowing for now to avoid breaking behaviour change when already configured.
+        // ENGINE is a TYPO3 custom option not handled by doctrine/dbal by a custom implementation,
+        // see `MySQLCompatibleAlterTablePlatformAwareTrait`
+        $allowedDefaultTableOptions = ['charset', 'collation', 'engine'];
+        $currentDefaultTableOptionsArrayKeys = array_keys($params['defaultTableOptions']);
+        foreach ($currentDefaultTableOptionsArrayKeys as $optionIdentifier) {
+            if (!in_array($optionIdentifier, $allowedDefaultTableOptions, true)) {
+                unset($params['defaultTableOptions'][$optionIdentifier]);
+            }
+        }
+        // Remove if empty.
+        if ($params['defaultTableOptions'] === []) {
+            unset($params['defaultTableOptions']);
+        }
+        return $params;
+    }
+
+    /**
+     * Set a suiting UTF-8 connection charset when nothing is set in connection configuration for `charset`.
+     *
+     * @todo Investigate how to deal with missing defaultTableOptions for MariaDB and MySQL connections,
+     *       which may be already partially set even when charset is missing.
+     */
+    private function ensureDefaultConnectionCharset(array $params): array
+    {
+        if (!array_key_exists('charset', $params) || !is_string($params['charset']) || $params['charset'] === '') {
+            $params['charset'] = 'utf8';
+            // @todo Add `charset = utf8mb4` for MySQL/MariaDB as default connection charset in 14.0 as breaking change.
+        }
+        return $params;
     }
 
     /**
@@ -268,11 +371,6 @@ class ConnectionPool
     protected function getDatabaseConnection(string $connectionName, array $connectionParams): Connection
     {
         $this->registerDoctrineTypes();
-
-        // Default to UTF-8 connection charset
-        if (empty($connectionParams['charset'])) {
-            $connectionParams['charset'] = 'utf8';
-        }
 
         $middlewares = $this->getDriverMiddlewares($connectionName, $connectionParams);
         $configuration = (new Configuration())
