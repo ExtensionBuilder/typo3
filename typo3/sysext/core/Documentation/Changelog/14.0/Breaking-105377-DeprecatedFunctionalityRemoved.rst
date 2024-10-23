@@ -13,7 +13,8 @@ Description
 
 The following PHP classes that have previously been marked as deprecated with v13 have been removed:
 
-- :php:``
+- :php:`\TYPO3\CMS\Backend\Toolbar\Enumeration\InformationStatus`
+- :php:`\TYPO3\CMS\Extbase\Security\Cryptography\HashService`
 
 The following PHP classes have been declared :php:`final`:
 
@@ -38,7 +39,7 @@ The following PHP class methods that have previously been marked as deprecated w
 
 The following PHP static class methods that have previously been marked as deprecated for v13 have been removed:
 
-- :php:``
+- :php:`\TYPO3\CMS\Backend\Utility\BackendUtility::thumbCode()`
 
 The following methods changed signature according to previous deprecations in v13 at the end of the argument list:
 

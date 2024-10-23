@@ -2413,6 +2413,7 @@ return [
         'restFiles' => [
             'Deprecation-101174-InformationStatusClass.rst',
             'Feature-101174-InformationStatus.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Frontend\ContentObject\ContentObjectGetDataHookInterface' => [
@@ -2515,6 +2516,7 @@ return [
     'TYPO3\CMS\Extbase\Security\Cryptography\HashService' => [
         'restFiles' => [
             'Deprecation-102763-ExtbaseHashService.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Core\DataHandling\SlugEnricher' => [
