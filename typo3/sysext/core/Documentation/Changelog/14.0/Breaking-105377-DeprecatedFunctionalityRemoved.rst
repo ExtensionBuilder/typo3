@@ -15,6 +15,7 @@ The following PHP classes that have previously been marked as deprecated with v1
 
 - :php:`\TYPO3\CMS\Backend\Toolbar\Enumeration\InformationStatus`
 - :php:`\TYPO3\CMS\Extbase\Security\Cryptography\HashService`
+- :php:`\TYPO3\CMS\Core\Type\Icon\IconState`
 
 The following PHP classes have been declared :php:`final`:
 
@@ -22,7 +23,8 @@ The following PHP classes have been declared :php:`final`:
 
 The following PHP interfaces that have previously been marked as deprecated with v13 have been removed:
 
-- :php:``
+- :php:`\TYPO3\CMS\Core\Domain\Repository\PageRepositoryInitHookInterface`
+- :php:`\TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface`
 
 The following PHP interfaces changed:
 
@@ -34,6 +36,16 @@ The following PHP class aliases that have previously been marked as deprecated w
 
 The following PHP class methods that have previously been marked as deprecated with v13 have been removed:
 
+* :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->getData()`
+* :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->getFieldName()`
+* :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->getPageId()`
+* :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->getPageTsConfig()`
+* :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->getTableName()`
+* :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->setData()`
+* :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->setFieldName()`
+* :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->setPageId()`
+* :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->setPageTsConfig()`
+* :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->setTableName()`
 - :php:`\TYPO3\CMS\Core\Authentication\BackendUserAuthentication->returnWebmounts()`
 - :php:`\TYPO3\CMS\Core\Imaging\Event\ModifyIconForResourcePropertiesEvent->getSize()`
 
@@ -43,7 +55,8 @@ The following PHP static class methods that have previously been marked as depre
 
 The following methods changed signature according to previous deprecations in v13 at the end of the argument list:
 
-- :php:`` (argument X is now required)
+- :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->__construct()` - All arguments are now mandatory
+- :php:`\TYPO3\CMS\Core\Imaging\IconFactory->getIcon()` (argument 4 is now of type :php:`\TYPO3\CMS\Core\Imaging\IconState|null`)
 
 The following public class properties have been dropped:
 
@@ -101,6 +114,12 @@ The following class constants have been dropped:
 - :php:`\TYPO3\CMS\Core\Imaging\Icon::SIZE_MEDIUM`
 - :php:`\TYPO3\CMS\Core\Imaging\Icon::SIZE_MEGA`
 - :php:`\TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL`
+- :php:`\TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_APPLICATION`
+- :php:`\TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_AUDIO`
+- :php:`\TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_IMAGE`
+- :php:`\TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_TEXT`
+- :php:`\TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_UNKNOWN`
+- :php:`\TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_VIDEO`
 
 The following global option handling have been dropped and are ignored:
 
@@ -112,7 +131,8 @@ The following global variables have been removed:
 
 The following hooks have been removed:
 
-- :php:`$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['X']['Y']`
+- :php:`$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList']['customizeCsvHeader']`
+- :php:`$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList']['customizeCsvRow']`
 
 The following single field configuration has been removed from TCA:
 
@@ -154,13 +174,14 @@ The following global JavaScript function has been removed:
 
 - :js:``
 
-The following JavaScript module has been removed:
+The following JavaScript modules have been removed:
 
-- :js:`x`
+- :js:`@typo3/t3editor/*`
 
-The following JavaScript method behaviour has changed:
+The following JavaScript method behaviours have changed:
 
-- :js:`X.y()` always requires an :js:`X` to be passed as first argument
+- :js:`FormEngineValidation.markFieldAsChanged()` always requires :js:`HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement` to be passed as first argument
+- :js:`FormEngineValidation.validateField()` always requires :js:`HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement` to be passed as first argument
 
 The following JavaScript method has been removed:
 

@@ -1310,6 +1310,7 @@ return [
     'TYPO3\CMS\Frontend\Page\PageRepositoryInitHookInterface' => [
         'restFiles' => [
             'Deprecation-88746-PageRepositoryPHPClassMovedFromFrontendToCoreExtension.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Extbase\Configuration\AbstractConfigurationManager' => [
@@ -2355,6 +2356,7 @@ return [
         'restFiles' => [
             'Deprecation-101133-IconStateClass.rst',
             'Breaking-101133-IconStateChangedType.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Core\Type\Enumeration' => [
@@ -2458,6 +2460,7 @@ return [
             'Breaking-102806-HooksInPageRepositoryRemoved.rst',
             'Deprecation-102806-InterfacesForPageRepositoryHooks.rst',
             'Feature-102806-BeforePageIsRetrievedEventInPageRepository.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface' => [
@@ -2465,6 +2468,7 @@ return [
             'Breaking-102806-HooksInPageRepositoryRemoved.rst',
             'Deprecation-102806-InterfacesForPageRepositoryHooks.rst',
             'Feature-102806-BeforePageIsRetrievedEventInPageRepository.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Frontend\ContentObject\ContentObjectStdWrapHookInterface' => [
