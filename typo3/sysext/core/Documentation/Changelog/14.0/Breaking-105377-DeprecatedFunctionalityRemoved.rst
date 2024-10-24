@@ -14,10 +14,15 @@ Description
 The following PHP classes that have previously been marked as deprecated with v13 have been removed:
 
 - :php:`\TYPO3\CMS\Backend\Toolbar\Enumeration\InformationStatus`
+- :php:`\TYPO3\CMS\Core\DataHandling\SlugEnricher`
 - :php:`\TYPO3\CMS\Core\Resource\DuplicationBehavior`
 - :php:`\TYPO3\CMS\Core\Type\Enumeration`
 - :php:`\TYPO3\CMS\Core\Type\Icon\IconState`
+- :php:`\TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver`
 - :php:`\TYPO3\CMS\Extbase\Security\Cryptography\HashService`
+- :php:`\TYPO3\CMS\Fluid\View\AbstractTemplateView`
+- :php:`\TYPO3\CMS\Fluid\View\StandaloneView`
+- :php:`\TYPO3\CMS\Fluid\View\TemplateView`
 
 The following PHP classes have been declared :php:`final`:
 
@@ -27,10 +32,12 @@ The following PHP interfaces that have previously been marked as deprecated with
 
 - :php:`\TYPO3\CMS\Core\Domain\Repository\PageRepositoryInitHookInterface`
 - :php:`\TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface`
+- :php:`\TYPO3\CMS\Extbase\Mvc\View\ViewResolverInterface`
 
 The following PHP interfaces changed:
 
-- :php:`` method :php:`` added
+- :php:`\TYPO3\CMS\Backend\LoginProvider\LoginProviderInterface->modifyView()` added
+- :php:`\TYPO3\CMS\Backend\LoginProvider\LoginProviderInterface->render()` removed
 
 The following PHP class aliases that have previously been marked as deprecated with v13 have been removed:
 
@@ -39,6 +46,10 @@ The following PHP class aliases that have previously been marked as deprecated w
 
 The following PHP class methods that have previously been marked as deprecated with v13 have been removed:
 
+- :php:`\TYPO3\CMS\Backend\Controller\LoginController->getCurrentRequest()`
+- :php:`\TYPO3\CMS\Backend\Controller\LoginController->getLoginProviderIdentifier()`
+- :php:`\TYPO3\CMS\Backend\LoginProvider\Event\ModifyPageLayoutOnLoginProviderSelectionEvent->getController()`
+- :php:`\TYPO3\CMS\Backend\LoginProvider\Event\ModifyPageLayoutOnLoginProviderSelectionEvent->getPageRenderer()`
 - :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->getData()`
 - :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->getFieldName()`
 - :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->getPageId()`
@@ -75,7 +86,10 @@ The following PHP class methods that have previously been marked as deprecated w
 
 The following PHP static class methods that have previously been marked as deprecated for v13 have been removed:
 
+- :php:`\TYPO3\CMS\Backend\Utility\BackendUtility::getTcaFieldConfiguration()`
 - :php:`\TYPO3\CMS\Backend\Utility\BackendUtility::thumbCode()`
+- :php:`\TYPO3\CMS\Core\Utility\GeneralUtility::hmac()`
+- :php:`\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getExtensionIcon()`
 - :php:`\TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger()`
 - :php:`\TYPO3\CMS\Core\Versioning\VersionState::cast()`
 
@@ -191,6 +205,7 @@ The following event has been removed:
 The following fallbacks have been removed:
 
 - Accepting arrays returned by :php:`readFileContent()` in Indexed Search external parsers
+- Allowing instantiation of :php:`\TYPO3\CMS\Core\Imaging\IconRegistry` in ext_localconf.php
 
 The following upgrade wizards have been removed:
 
@@ -241,6 +256,10 @@ The following JavaScript method behaviours have changed:
 The following JavaScript method has been removed:
 
 - :js:`updateQueryStringParameter()` of :js:`@typo3/backend/utility.js`
+
+The following smooth migration for JavaScript modules have been removed:
+
+- :js:`@typo3/backend/page-tree/page-tree-element` to :js:`@typo3/backend/tree/page-tree-element`
 
 The following CKEditor plugin has been removed:
 

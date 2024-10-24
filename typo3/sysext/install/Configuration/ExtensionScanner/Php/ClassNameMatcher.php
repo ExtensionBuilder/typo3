@@ -2530,26 +2530,31 @@ return [
     'TYPO3\CMS\Core\DataHandling\SlugEnricher' => [
         'restFiles' => [
             'Deprecation-103244-ClassSlugEnricher.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Fluid\View\StandaloneView' => [
         'restFiles' => [
             'Deprecation-104773-CustomFluidViewsAndExtbase.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Fluid\View\TemplateView' => [
         'restFiles' => [
             'Deprecation-104773-CustomFluidViewsAndExtbase.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Extbase\Mvc\View\ViewResolverInterface' => [
         'restFiles' => [
             'Deprecation-104773-CustomFluidViewsAndExtbase.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver' => [
         'restFiles' => [
             'Deprecation-104773-CustomFluidViewsAndExtbase.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic' => [
