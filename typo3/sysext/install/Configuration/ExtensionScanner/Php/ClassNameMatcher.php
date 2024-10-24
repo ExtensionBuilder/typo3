@@ -2362,6 +2362,7 @@ return [
     'TYPO3\CMS\Core\Type\Enumeration' => [
         'restFiles' => [
             'Deprecation-101163-Enumeration.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Core\Resource\AbstractRepository' => [
@@ -2392,6 +2393,7 @@ return [
     'TYPO3\CMS\Core\Resource\DuplicationBehavior' => [
         'restFiles' => [
             'Deprecation-101151-DuplicationBehaviorClass.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Core\Resource\Processing\AbstractGraphicalTask' => [
@@ -2486,11 +2488,13 @@ return [
     'TYPO3\CMS\Install\Updates\AbstractDownloadExtensionUpdate' => [
         'restFiles' => [
             'Deprecation-102943-AbstractDownloadExtensionUpdateMovedToExtextensionmanager.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Install\Updates\ExtensionModel' => [
         'restFiles' => [
             'Deprecation-102943-AbstractDownloadExtensionUpdateMovedToExtextensionmanager.rst',
+            'Breaking-105377-DeprecatedFunctionalityRemoved.rst',
         ],
     ],
     'TYPO3\CMS\Extensionmanager\Event\AfterExtensionDatabaseContentHasBeenImportedEvent' => [

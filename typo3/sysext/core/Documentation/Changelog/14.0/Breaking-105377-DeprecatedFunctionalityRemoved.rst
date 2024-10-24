@@ -14,12 +14,14 @@ Description
 The following PHP classes that have previously been marked as deprecated with v13 have been removed:
 
 - :php:`\TYPO3\CMS\Backend\Toolbar\Enumeration\InformationStatus`
-- :php:`\TYPO3\CMS\Extbase\Security\Cryptography\HashService`
+- :php:`\TYPO3\CMS\Core\Resource\DuplicationBehavior`
+- :php:`\TYPO3\CMS\Core\Type\Enumeration`
 - :php:`\TYPO3\CMS\Core\Type\Icon\IconState`
+- :php:`\TYPO3\CMS\Extbase\Security\Cryptography\HashService`
 
 The following PHP classes have been declared :php:`final`:
 
-- :php:``
+- :php:`\TYPO3\CMS\Extensionmanager\Updates\ExtensionModel`
 
 The following PHP interfaces that have previously been marked as deprecated with v13 have been removed:
 
@@ -32,7 +34,8 @@ The following PHP interfaces changed:
 
 The following PHP class aliases that have previously been marked as deprecated with v13 have been removed:
 
-- :php:``
+- :php:`\TYPO3\CMS\Install\Updates\AbstractDownloadExtensionUpdate`
+- :php:`\TYPO3\CMS\Install\Updates\ExtensionModel`
 
 The following PHP class methods that have previously been marked as deprecated with v13 have been removed:
 
@@ -48,16 +51,39 @@ The following PHP class methods that have previously been marked as deprecated w
 * :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->setTableName()`
 - :php:`\TYPO3\CMS\Core\Authentication\BackendUserAuthentication->returnWebmounts()`
 - :php:`\TYPO3\CMS\Core\Imaging\Event\ModifyIconForResourcePropertiesEvent->getSize()`
+- :php:`\TYPO3\CMS\Core\Versioning\VersionState->equals()`
 - :php:`\TYPO3\CMS\Fluid\View\TemplatePaths->fillDefaultsByPackageName()`
 
 The following PHP static class methods that have previously been marked as deprecated for v13 have been removed:
 
 - :php:`\TYPO3\CMS\Backend\Utility\BackendUtility::thumbCode()`
+- :php:`\TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger()`
+- :php:`\TYPO3\CMS\Core\Versioning\VersionState::cast()`
 
 The following methods changed signature according to previous deprecations in v13 at the end of the argument list:
 
 - :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->__construct()` - All arguments are now mandatory
 - :php:`\TYPO3\CMS\Core\Imaging\IconFactory->getIcon()` (argument 4 is now of type :php:`\TYPO3\CMS\Core\Imaging\IconState|null`)
+- :php:`\TYPO3\CMS\Core\Resource\AbstractFile->copyTo()` (argument 3 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\AbstractFile->moveTo()` (argument 3 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\AbstractFile->rename()` (argument 2 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\FileInterface->rename()` (argument 2 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\FileReference->rename()` (argument 2 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\Folder->addFile()` (argument 3 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\Folder->addUploadedFile()` (argument 2 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\Folder->copyTo()` (argument 3 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\Folder->moveTo()` (argument 3 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\InaccessibleFolder->addFile()` (argument 3 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\InaccessibleFolder->addUploadedFile()` (argument 2 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\InaccessibleFolder->copyTo()` (argument 3 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\InaccessibleFolder->moveTo()` (argument 3 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\ResourceStorage->addFile()` (argument 4 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\ResourceStorage->addUploadedFile()` (argument 4 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\ResourceStorage->copyFile()` (argument 4 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\ResourceStorage->copyFolder()` (argument 4 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\ResourceStorage->moveFile()` (argument 4 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\ResourceStorage->moveFolder()` (argument 4 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
+- :php:`\TYPO3\CMS\Core\Resource\ResourceStorage->renameFile()` (argument 3 is now of type :php:`\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`)
 
 The following public class properties have been dropped:
 
@@ -145,7 +171,7 @@ The following event has been removed:
 
 The following fallbacks have been removed:
 
-- Usage of the X
+- Accepting arrays returned by :php:`readFileContent()` in Indexed Search external parsers
 
 The following upgrade wizards have been removed:
 
@@ -184,6 +210,7 @@ The following global JavaScript function has been removed:
 
 The following JavaScript modules have been removed:
 
+- :js:`@typo3/backend/wizard.js`
 - :js:`@typo3/t3editor/*`
 
 The following JavaScript method behaviours have changed:
@@ -193,7 +220,7 @@ The following JavaScript method behaviours have changed:
 
 The following JavaScript method has been removed:
 
-- :js:`X()` of :js:`@typo3/x/y`
+- :js:`updateQueryStringParameter()` of :js:`@typo3/backend/utility.js`
 
 The following CKEditor plugin has been removed:
 
