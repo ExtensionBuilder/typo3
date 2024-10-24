@@ -48,6 +48,7 @@ The following PHP class methods that have previously been marked as deprecated w
 * :php:`\TYPO3\CMS\Backend\View\BackendLayout\DataProviderContext->setTableName()`
 - :php:`\TYPO3\CMS\Core\Authentication\BackendUserAuthentication->returnWebmounts()`
 - :php:`\TYPO3\CMS\Core\Imaging\Event\ModifyIconForResourcePropertiesEvent->getSize()`
+- :php:`\TYPO3\CMS\Fluid\View\TemplatePaths->fillDefaultsByPackageName()`
 
 The following PHP static class methods that have previously been marked as deprecated for v13 have been removed:
 
@@ -148,7 +149,14 @@ The following fallbacks have been removed:
 
 The following upgrade wizards have been removed:
 
-- Wizard for X
+- Install extension "fe_login_mode" from TER
+- Migrate base and path to the new identifier property of the "sys_filemounts" table
+- Migrate site settings to separate file
+- Set workspace records in table "sys_template" to deleted
+- Migrate backend user and groups to new module names
+- Migrate backend groups "explicit_allowdeny" field to simplified format
+- Migrate sys_log entries to a JSON formatted value
+- Migrate storage and folder to the new folder_identifier property of the "sys_file_collection" table
 
 The following features are now always enabled:
 
