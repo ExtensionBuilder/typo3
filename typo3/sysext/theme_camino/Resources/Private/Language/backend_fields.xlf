@@ -336,18 +336,6 @@
       <trans-unit id="tx_themecamino_list_item.palettes.linklabeliconconfig">
         <source>Link / Call to Action (CTA)</source>
       </trans-unit>
-      <trans-unit id="tx_themecamino_list_item.sorting_foreign">
-        <source>Sorting</source>
-      </trans-unit>
-      <trans-unit id="tx_themecamino_list_item.tablename">
-        <source>Reference: Database table</source>
-      </trans-unit>
-      <trans-unit id="tx_themecamino_list_item.fieldname">
-        <source>Reference: Database field</source>
-      </trans-unit>
-      <trans-unit id="tx_themecamino_list_item.uid_foreign">
-        <source>Foreign table element reference</source>
-      </trans-unit>
       <trans-unit id="tx_themecamino_list_item.category">
         <source>Category</source>
       </trans-unit>

@@ -8,7 +8,6 @@ return [
         'label_alt_force' => true,
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'type' => 'uid_foreign:CType',
         'hideTable' => true,
         'sortby' => 'sorting_foreign',
         'delete' => 'deleted',
@@ -28,47 +27,11 @@ return [
         ],
     ],
     'columns' => [
-        // System fields, might be just passthrough at some point?
-        'uid_foreign' => [
-            'label' => 'theme_camino.backend_fields:tx_themecamino_list_item.uid_foreign',
-            'config' => [
-                'type' => 'group',
-                'allowed' => 'tt_content',
-                'size' => 1,
-                'maxitems' => 1,
-                'minitems' => 0,
-            ],
-        ],
-        'sorting_foreign' => [
-            'label' => 'theme_camino.backend_fields:tx_themecamino_list_item.sorting_foreign',
-            'config' => [
-                'type' => 'number',
-                'size' => 4,
-                'max' => 4,
-                'checkbox' => 0,
-                'range' => [
-                    'upper' => 1000,
-                    'lower' => 10,
-                ],
-                'default' => 0,
-            ],
-        ],
-        'tablename' => [
-            'label' => 'theme_camino.backend_fields:tx_themecamino_list_item.tablename',
-            'l10n_mode' => 'exclude',
-            'config' => [
-                'type' => 'input',
-                'size' => 30,
-                'eval' => 'trim',
-            ],
-        ],
+        // Field for foreign_match_fields
         'fieldname' => [
-            'label' => 'theme_camino.backend_fields:tx_themecamino_list_item.fieldname',
-            'l10n_mode' => 'exclude',
             'config' => [
+                // Could be type passthrough, but then database field would not be created automatically.
                 'type' => 'input',
-                'size' => 30,
-                'eval' => 'trim',
             ],
         ],
 
@@ -91,12 +54,11 @@ return [
         ],
         'header' => [
             'l10n_mode' => 'prefixLangTitle',
-            'l10n_cat' => 'text',
             'label' => 'theme_camino.backend_fields:tx_themecamino_list_item.header',
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 256,
+                'max' => 255,
             ],
         ],
         'images' => [
@@ -179,7 +141,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 256,
+                'max' => 255,
             ],
         ],
         'text' => [
@@ -187,9 +149,9 @@ return [
             'label' => 'theme_camino.backend_fields:tx_themecamino_list_item.text',
             'config' => [
                 'type' => 'text',
-                'cols' => 80,
+                'cols' => 50,
                 'rows' => 10,
-                'softref' => 'typolink_tag,images,email[subst],url',
+                'softref' => 'typolink_tag,email[subst],url',
             ],
         ],
     ],

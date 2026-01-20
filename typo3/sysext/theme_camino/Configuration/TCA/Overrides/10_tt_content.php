@@ -63,7 +63,7 @@ $additionalColumns = [
         'config' => [
             'type' => 'input',
             'size' => 30,
-            'max' => 256,
+            'max' => 255,
         ],
     ],
     'tx_themecamino_link_config' => [
