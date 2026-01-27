@@ -300,10 +300,15 @@ function renderEditorDispatcher(
 /**
  * opens a popup window with the element browser
  */
-function openTypo3WinBrowser(mode: string, params: string): void {
+function openTypo3WinBrowser(mode: string, fieldReference: string, allowedTypes: string): void {
+  const queryParams = new URLSearchParams({
+    mode: mode,
+    fieldReference: fieldReference,
+    allowedTypes: allowedTypes,
+  });
   Modal.advanced({
     type: Modal.types.iframe,
-    content: TYPO3.settings.FormEditor.typo3WinBrowserUrl + '&mode=' + mode + '&bparams=' + params,
+    content: TYPO3.settings.FormEditor.typo3WinBrowserUrl + '&' + queryParams.toString(),
     size: Modal.sizes.large
   });
 }
@@ -2111,7 +2116,7 @@ export function renderTypo3WinBrowserEditor(
       .find(getHelper().getDomElementDataAttribute('contentElementSelectorTarget', 'bracesWithKey'));
 
     insertTarget.attr(getHelper().getDomElementDataAttribute('contentElementSelectorTarget'), randomIdentifier);
-    openTypo3WinBrowser('db', randomIdentifier + '|||' + editorConfiguration.browsableType);
+    openTypo3WinBrowser('db', String(randomIdentifier), editorConfiguration.browsableType);
   });
 
   listenOnElementBrowser();

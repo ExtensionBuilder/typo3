@@ -61,11 +61,15 @@ export class PageTypeElement extends BaseElement<number> {
 
   private openElementBrowser() {
     const mode = 'db';
-    const params = this.formid + '|||pages';
+    const queryParams = new URLSearchParams({
+      mode: mode,
+      fieldReference: this.formid,
+      allowedTypes: 'pages',
+    });
 
     const modal = Modal.advanced({
       type: Modal.types.iframe,
-      content: top.TYPO3.settings.Wizards.elementBrowserUrl + '&mode=' + mode + '&bparams=' + params,
+      content: top.TYPO3.settings.Wizards.elementBrowserUrl + '&' + queryParams.toString(),
       size: Modal.sizes.large,
     });
     window.addEventListener('message', this.elementBrowserListener);

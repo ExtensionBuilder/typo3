@@ -54,13 +54,19 @@ class BackendLog {
   private initializeElementBrowserElements(): void {
     this.elementBrowserElements.forEach((element: HTMLAnchorElement): void => {
       const triggerField = <HTMLInputElement>document.getElementById(element.dataset.triggerFor);
-      element.dataset.params = triggerField.name + '|||pages';
+      element.dataset.fieldReference = triggerField.name;
+      element.dataset.allowedTypes = 'pages';
       element.addEventListener('click', (event: Event): void => {
         event.preventDefault();
         const target = <HTMLAnchorElement>event.currentTarget;
+        const queryParams = new URLSearchParams({
+          mode: target.dataset.mode,
+          fieldReference: target.dataset.fieldReference,
+          allowedTypes: target.dataset.allowedTypes,
+        });
         Modal.advanced({
           type: Modal.types.iframe,
-          content: target.dataset.target + '&mode=' + target.dataset.mode + '&bparams=' + target.dataset.params,
+          content: target.dataset.target + '&' + queryParams.toString(),
           size: Modal.sizes.large
         });
       });

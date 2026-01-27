@@ -194,14 +194,35 @@ export default (function() {
    * Opens a popup window with the element browser (browser.php)
    *
    * @param {string} mode can be "db" or "file"
-   * @param {string} params additional params for the browser window
+   * @param {string} fieldReference form field name reference
+   * @param {string} allowedTypes allowed tables or file extensions
+   * @param {string} disallowedTypes disallowed file extensions (for file mode)
+   * @param {string} irreObjectId IRRE object identifier
    * @param {string} entryPoint the entry point, which should be expanded by default
    */
-  FormEngine.openPopupWindow = function(mode: string, params: string, entryPoint: string): ModalElement {
-    const queryParams: {mode: string, bparams: string, expandPage?: string, expandFolder?: string} = {
+  FormEngine.openPopupWindow = function(
+    mode: string,
+    fieldReference: string,
+    allowedTypes: string,
+    disallowedTypes: string,
+    irreObjectId: string,
+    entryPoint: string
+  ): ModalElement {
+    const queryParams: Record<string, string> = {
       mode: mode,
-      bparams: params
     };
+    if (fieldReference) {
+      queryParams.fieldReference = fieldReference;
+    }
+    if (allowedTypes) {
+      queryParams.allowedTypes = allowedTypes;
+    }
+    if (disallowedTypes) {
+      queryParams.disallowedFileExtensions = disallowedTypes;
+    }
+    if (irreObjectId) {
+      queryParams.irreObjectId = irreObjectId;
+    }
     if (entryPoint) {
       if (mode === 'db') {
         queryParams.expandPage = entryPoint;
@@ -464,10 +485,13 @@ export default (function() {
       e.stopPropagation();
 
       const mode = target.dataset.mode;
-      const params = target.dataset.params;
+      const fieldReference = target.dataset.fieldReference ?? '';
+      const allowedTypes = target.dataset.allowedTypes ?? '';
+      const disallowedTypes = target.dataset.disallowedTypes ?? '';
+      const irreObjectId = target.dataset.irreObjectId ?? '';
       const entryPoint = target.dataset.entryPoint;
 
-      FormEngine.openPopupWindow(mode, params, entryPoint);
+      FormEngine.openPopupWindow(mode, fieldReference, allowedTypes, disallowedTypes, irreObjectId, entryPoint);
     }).delegateTo(document, '.t3js-element-browser');
 
     new RegularEvent('click', (evt: Event, target: HTMLElement): void => {
