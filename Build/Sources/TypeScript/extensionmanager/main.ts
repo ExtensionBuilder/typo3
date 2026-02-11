@@ -20,6 +20,7 @@ import SecurityUtility from '@typo3/core/security-utility';
 import ExtensionManagerRepository from './repository';
 import ExtensionManagerUpdate from './update';
 import ExtensionManagerUploadForm from './upload-form';
+import './extension-toggle-button';
 import type { AjaxResponse } from '@typo3/core/ajax/ajax-response';
 import AjaxRequest from '@typo3/core/ajax/ajax-request';
 import DebounceEvent from '@typo3/core/event/debounce-event';
@@ -131,12 +132,6 @@ class ExtensionManager {
 
       }
 
-      new RegularEvent('click', (): void => {
-        this.progressBar = document.createElement('typo3-backend-progress-bar');
-        document.body.appendChild(this.progressBar);
-        this.progressBar.start();
-      }).delegateTo(document, '.onClickMaskExtensionManager');
-
       new RegularEvent('click', (e: Event, target: HTMLAnchorElement): void => {
         e.preventDefault();
 
@@ -145,22 +140,6 @@ class ExtensionManager {
         this.progressBar.start();
         new AjaxRequest(target.href).get().then((response: AjaxResponse): Promise<void> => this.updateExtension(response));
       }).delegateTo(document, 'a[data-action=update-extension]');
-
-      new RegularEvent('change', (e: Event, target: HTMLInputElement): void => {
-        const actionButton = document.querySelector('.t3js-dependencies');
-
-        if (target.checked) {
-          actionButton.classList.remove('disabled');
-        } else {
-          actionButton.classList.add('disabled');
-        }
-      }).delegateTo(document, 'input[name=unlockDependencyIgnoreButton]');
-
-      new RegularEvent('click', (): void => {
-        this.progressBar = document.createElement('typo3-backend-progress-bar');
-        document.body.appendChild(this.progressBar);
-        this.progressBar.start();
-      }).delegateTo(document, '.t3-button-action-installdistribution');
 
       let searchField: HTMLInputElement;
       if ((searchField = document.querySelector(ExtensionManagerIdentifier.searchField)) !== null) {
