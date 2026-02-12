@@ -29,6 +29,7 @@ import { FormEngineReview } from '@typo3/backend/form-engine-review';
 import type FormEngine from '@typo3/backend/form-engine';
 import type { FormEngineFieldElement } from '@typo3/backend/form-engine';
 import coreCoreLabels from '~labels/core.core';
+import listLabels from '~labels/core.mod_web_list';
 
 type CustomEvaluationCallback = (value: string) => string;
 type FormEngineInputParams = { field: string, evalList?: string, is_in?: string };
@@ -597,12 +598,12 @@ export default class FormEngineValidation {
 
   public static showErrorModal(): void {
     const modal = Modal.confirm(
-      TYPO3.lang.alert || 'Alert',
+      coreCoreLabels.get('labels.fieldsMissing.title'),
       coreCoreLabels.get('labels.fieldsMissing'),
       Severity.error,
       [
         {
-          text: TYPO3.lang['button.ok'] || 'OK',
+          text: listLabels.get('button.ok'),
           active: true,
           btnClass: 'btn-default',
           name: 'ok',

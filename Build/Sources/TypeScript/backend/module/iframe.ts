@@ -13,8 +13,8 @@
 
 import { html, LitElement, nothing, type TemplateResult } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import { lll } from '@typo3/core/lit-helper';
 import type { ModuleState } from '../module';
+import coreLabels from '~labels/core.core';
 
 /**
  * Module: @typo3/backend/module/iframe
@@ -58,12 +58,12 @@ export class IframeModuleElement extends LitElement {
 
     return html`
       <iframe
-        src="${this.endpoint}"
+        src=${this.endpoint}
         name="list_frame"
         id="typo3-contentIframe"
         class="scaffold-content-module-iframe t3js-scaffold-content-module-iframe"
-        title="${lll('iframe.listFrame')}"
-        @load="${this._loaded}"
+        title=${coreLabels.get('iframe.listFrame')}
+        @load=${this._loaded}
       ></iframe>
     `;
   }

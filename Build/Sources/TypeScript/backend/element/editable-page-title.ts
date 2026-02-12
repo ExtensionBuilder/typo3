@@ -15,6 +15,8 @@ import { html, css, LitElement, type TemplateResult, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import '@typo3/backend/element/icon-element';
 import AjaxDataHandler from '../ajax-data-handler';
+import commonLabels from '~labels/core.common';
+import layoutLabels from '~labels/backend.layout';
 
 @customElement('typo3-backend-editable-page-title')
 export class EditablePageTitle extends LitElement {
@@ -165,10 +167,10 @@ export class EditablePageTitle extends LitElement {
   @state() _isSubmitting: boolean = false;
 
   protected labels: Record<string, string> = {
-    input: TYPO3?.lang?.['editablePageTitle.input.field.label'] || 'Field',
-    edit: TYPO3?.lang?.['editablePageTitle.button.edit.label'] || 'Edit',
-    save: TYPO3?.lang?.['editablePageTitle.button.save.label'] || 'Save',
-    cancel: TYPO3?.lang?.['editablePageTitle.button.cancel.label'] || 'Cancel',
+    input: layoutLabels.get('editPageTitle.input.field.label'),
+    edit: layoutLabels.get('editPageTitle'),
+    save: commonLabels.get('save'),
+    cancel: commonLabels.get('cancel'),
   };
 
   async startEditing(): Promise<void> {

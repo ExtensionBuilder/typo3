@@ -26,6 +26,8 @@ import { DataTransferTypes } from '@typo3/backend/enum/data-transfer-types';
 import Severity from '@typo3/backend/severity';
 import type { AjaxResponse } from '@typo3/core/ajax/ajax-response';
 import type { DragTooltipMetadata } from '@typo3/backend/drag-tooltip';
+import miscLabels from '~labels/core.misc';
+import layoutLabels from '~labels/backend.layout';
 
 interface TreeNodeStatus {
   expanded: boolean
@@ -118,8 +120,8 @@ export class Tree extends LitElement {
   protected unfilteredNodes: string = '';
   protected muteErrorNotifications: boolean = false;
 
-  protected networkErrorTitle: string = top.TYPO3.lang.tree_networkError;
-  protected networkErrorMessage: string = top.TYPO3.lang.tree_networkErrorDescription;
+  protected networkErrorTitle: string = miscLabels.get('tree_networkError');
+  protected networkErrorMessage: string = miscLabels.get('tree_networkErrorDescription');
 
   protected allowNodeEdit: boolean = false;
   protected allowNodeDrag: boolean = false;
@@ -1176,7 +1178,7 @@ export class Tree extends LitElement {
       ? html`
         <div class="node-dropzone-delete" data-tree-dropzone="delete">
           <typo3-backend-icon identifier="actions-delete" size="small"></typo3-backend-icon>
-          ${TYPO3.lang.deleteItem}
+          ${layoutLabels.get('deleteItem')}
         </div>
         `
       : html`${nothing}`;

@@ -16,6 +16,7 @@ import { PseudoButtonLitElement } from '@typo3/backend/element/pseudo-button';
 import Modal from '@typo3/backend/modal';
 import { html } from 'lit';
 import { topLevelModuleImport } from '@typo3/backend/utility/top-level-module-import';
+import listLabels from '~labels/core.mod_web_list';
 
 /**
  * Module: @typo3/backend/element/qrcode-modal-button
@@ -62,7 +63,7 @@ export class QrCodeModalButton extends PseudoButtonLitElement {
       `,
       buttons: [
         {
-          text: TYPO3.lang['button.close'] || 'Close',
+          text: listLabels.get('button.close'),
           name: 'close',
           trigger: function (event, modal) {
             modal.hideModal();

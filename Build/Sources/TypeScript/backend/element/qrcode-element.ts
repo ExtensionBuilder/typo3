@@ -19,6 +19,7 @@ import '@typo3/backend/element/icon-element';
 import '@typo3/backend/copy-to-clipboard';
 import type { AjaxResponse } from '@typo3/core/ajax/ajax-response';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import labels from '~labels/backend.qrcode';
 
 enum QrCodeSize {
   small = 64,
@@ -77,8 +78,8 @@ export class QrCodeElement extends LitElement {
     if (!this.showUrl) {
       return nothing;
     }
-    const urlLabel = TYPO3.lang['qrcode.url'] || 'URL';
-    const copyUrlLabel = TYPO3.lang['qrcode.copyUrl'] || 'Copy URL';
+    const urlLabel = labels.get('qrcode.url');
+    const copyUrlLabel = labels.get('qrcode.copyUrl');
     return html`
       <div class="form-group url-info-section">
         <label class="form-label">${urlLabel}</label>
@@ -98,11 +99,11 @@ export class QrCodeElement extends LitElement {
       return html`${nothing}`;
     }
 
-    const pngLabel = TYPO3.lang['qrcode.format.png'] || 'PNG';
-    const svgLabel = TYPO3.lang['qrcode.format.svg'] || 'SVG';
-    const formatLabel = TYPO3.lang['qrcode.format'] || 'Format';
-    const sizeLabel = TYPO3.lang['qrcode.size'] || 'Size';
-    const downloadLabel = TYPO3.lang['qrcode.download'] || 'Download';
+    const pngLabel = labels.get('qrcode.format.png');
+    const svgLabel = labels.get('qrcode.format.svg');
+    const formatLabel = labels.get('qrcode.format');
+    const sizeLabel = labels.get('qrcode.size');
+    const downloadLabel = labels.get('qrcode.download');
 
     return html`
       <form name="qrcode-download" method="POST" action="${TYPO3.settings.ajaxUrls.qrcode_download}">

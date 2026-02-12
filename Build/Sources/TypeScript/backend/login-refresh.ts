@@ -18,6 +18,7 @@ import { SeverityEnum } from './enum/severity';
 import AjaxRequest from '@typo3/core/ajax/ajax-request';
 import Notification from '@typo3/backend/notification';
 import '@typo3/backend/element/progress-bar-element';
+import coreLabels from '~labels/core.core';
 
 enum MarkupIdentifiers {
   loginrefresh = 't3js-modal-loginrefresh',
@@ -191,14 +192,14 @@ class LoginRefresh {
   protected createBackendLockedModal(): ModalElement {
     return Modal.advanced({
       additionalCssClasses: [ MarkupIdentifiers.lockedModal ],
-      title: TYPO3.lang['mess.please_wait'],
+      title: coreLabels.get('mess.please_wait'),
       severity: SeverityEnum.notice,
       style: Styles.light,
       size: Sizes.small,
       staticBackdrop: true,
       hideCloseButton: true,
       content: html`
-        <p>${TYPO3.lang['mess.be_locked']}</p>
+        <p>${coreLabels.get('mess.be_locked')}</p>
       `
     });
   }
@@ -209,7 +210,7 @@ class LoginRefresh {
   protected createTimeoutModal(): ModalElement {
     const modal = Modal.advanced({
       additionalCssClasses: [ MarkupIdentifiers.loginrefresh ],
-      title: TYPO3.lang['mess.login_about_to_expire_title'],
+      title: coreLabels.get('mess.login_about_to_expire_title'),
       severity: SeverityEnum.notice,
       style: Styles.light,
       size: Sizes.small,
@@ -217,14 +218,14 @@ class LoginRefresh {
       hideCloseButton: true,
       buttons: [
         {
-          text: TYPO3.lang['mess.refresh_login_logout_button'],
+          text: coreLabels.get('mess.refresh_login_logout_button'),
           active: false,
           btnClass: 'btn-default',
           name: 'logout',
           trigger: () => top.location.href = this.logoutUrl
         },
         {
-          text: TYPO3.lang['mess.refresh_login_refresh_button'],
+          text: coreLabels.get('mess.refresh_login_refresh_button'),
           active: true,
           btnClass: 'btn-primary',
           name: 'refreshSession',
@@ -239,7 +240,7 @@ class LoginRefresh {
         }
       ],
       content: html`
-        <p>${TYPO3.lang['mess.login_about_to_expire']}</p>
+        <p>${coreLabels.get('mess.login_about_to_expire')}</p>
         <typo3-login-refresh-progress-bar
           @progress-bar-overdue=${() => modal.dispatchEvent(new Event('show-login-form'))}
           ></typo3-login-refresh-progress-bar>
@@ -261,7 +262,7 @@ class LoginRefresh {
    * Generates the login form displayed if the session has timed out.
    */
   protected createLoginFormModal(): ModalElement {
-    const refresh_login_title = String(TYPO3.lang['mess.refresh_login_title']).replace('%s', TYPO3.configuration.username);
+    const refresh_login_title = coreLabels.get('mess.refresh_login_title', [TYPO3.configuration.username]);
     const modal = Modal.advanced({
       additionalCssClasses: [ MarkupIdentifiers.loginFormModal ],
       title: refresh_login_title,
@@ -272,14 +273,14 @@ class LoginRefresh {
       hideCloseButton: true,
       buttons: [
         {
-          text: TYPO3.lang['mess.refresh_exit_button'],
+          text: coreLabels.get('mess.refresh_exit_button'),
           active: false,
           btnClass: 'btn-default',
           name: 'logout',
           trigger: () => top.location.href = this.logoutUrl
         },
         {
-          text: TYPO3.lang['mess.refresh_login_button'],
+          text: coreLabels.get('mess.refresh_login_button'),
           active: false,
           btnClass: 'btn-primary',
           name: 'refreshSession',
@@ -295,7 +296,7 @@ class LoginRefresh {
         }
       ],
       content: html`
-        <p>${TYPO3.lang['mess.login_expired']}</p>
+        <p>${coreLabels.get('mess.login_expired')}</p>
         <form
             id="beLoginRefresh"
             method="POST"
@@ -320,7 +321,7 @@ class LoginRefresh {
                 autofocus
                 class="form-control"
                 autocomplete="current-password"
-                placeholder=${TYPO3.lang['mess.refresh_login_password']}>
+                placeholder=${coreLabels.get('mess.refresh_login_password')}>
           </div>
         </form>
       `
@@ -355,7 +356,7 @@ class LoginRefresh {
     const passwordFieldValue = passwordField.value;
 
     if (passwordFieldValue === '' && useridentField.value === '') {
-      Notification.error(TYPO3.lang['mess.refresh_login_failed'], TYPO3.lang['mess.refresh_login_emptyPassword']);
+      Notification.error(coreLabels.get('mess.refresh_login_failed'), coreLabels.get('mess.refresh_login_emptyPassword'));
       passwordField.focus();
       return;
     }
@@ -380,7 +381,7 @@ class LoginRefresh {
       // User is logged in
       this.hideLoginForm();
     } else {
-      Notification.error(TYPO3.lang['mess.refresh_login_failed'], TYPO3.lang['mess.refresh_login_failed_message']);
+      Notification.error(coreLabels.get('mess.refresh_login_failed'), coreLabels.get('mess.refresh_login_failed_message'));
       passwordField.focus();
     }
   };

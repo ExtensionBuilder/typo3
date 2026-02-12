@@ -33,6 +33,9 @@ import type { DragTooltipMetadata } from '@typo3/backend/drag-tooltip';
 import type { DataTransferStringItem } from '@typo3/backend/tree/tree';
 import '@typo3/backend/viewport/content-navigation-toggle';
 import 'bootstrap'; // for data-bs-toggle="dropdown"
+import coreLabels from '~labels/core.core';
+import coreCommonLabels from '~labels/core.common';
+import listLabels from '~labels/core.mod_web_list';
 
 /**
  * This module defines the Custom Element for rendering the navigation component for an editable page tree
@@ -201,17 +204,17 @@ export class EditablePageTree extends PageTree {
 
     if (this.settings.displayDeleteConfirmation) {
       const modal = Modal.confirm(
-        TYPO3.lang['mess.delete.title'],
-        TYPO3.lang['mess.delete'].replace('%s', options.node.name),
+        coreLabels.get('mess.delete.title'),
+        coreLabels.get('mess.delete', [options.node.name]),
         Severity.warning, [
           {
-            text: TYPO3.lang['labels.cancel'] || 'Cancel',
+            text: coreLabels.get('labels.cancel'),
             active: true,
             btnClass: 'btn-default',
             name: 'cancel'
           },
           {
-            text: TYPO3.lang.delete || 'Delete',
+            text: coreCommonLabels.get('delete'),
             btnClass: 'btn-warning',
             name: 'delete'
           }
@@ -242,36 +245,36 @@ export class EditablePageTree extends PageTree {
     };
 
     let modalText = '';
+    const languageArguments = [node.name, target.name] as const;
     switch(position) {
       case TreeNodePositionEnum.BEFORE:
-        modalText = TYPO3.lang['mess.move_before'];
+        modalText = coreLabels.get('mess.move_before', languageArguments);
         break;
       case TreeNodePositionEnum.AFTER:
-        modalText = TYPO3.lang['mess.move_after'];
+        modalText = coreLabels.get('mess.move_after', languageArguments);
         break;
       default:
-        modalText = TYPO3.lang['mess.move_into'];
+        modalText = coreLabels.get('mess.move_into', languageArguments);
         break;
     }
-    modalText = modalText.replace('%s', node.name).replace('%s', target.name);
 
     const modal = Modal.confirm(
-      TYPO3.lang.move_page,
+      listLabels.get('move_page'),
       modalText,
       Severity.warning, [
         {
-          text: TYPO3.lang['labels.cancel'] || 'Cancel',
+          text: coreLabels.get('labels.cancel'),
           active: true,
           btnClass: 'btn-default',
           name: 'cancel'
         },
         {
-          text: TYPO3.lang['cm.copy'] || 'Copy',
+          text: coreLabels.get('cm.copy'),
           btnClass: 'btn-warning',
           name: 'copy'
         },
         {
-          text: TYPO3.lang['labels.move'] || 'Move',
+          text: coreLabels.get('labels.move'),
           btnClass: 'btn-warning',
           name: 'move'
         }

@@ -57,7 +57,7 @@ class Clearable {
   }
 
   private registerClearable(): void {
-    HTMLInputElement.prototype.clearable = function(options: Options = {}): void {
+    HTMLInputElement.prototype.clearable = async function(options: Options = {}): Promise<void> {
       if (this.isClearable) {
         // input field is already clearable, nothing to do here
         return;
@@ -78,8 +78,9 @@ class Clearable {
       let clearButtonTitle = 'Clear input';
       if (this.dataset.clearableLabel) {
         clearButtonTitle = this.dataset.clearableLabel;
-      } else if ('lang' in top.TYPO3 && top.TYPO3.lang['labels.inputfield.clearButton.title']) {
-        clearButtonTitle = top.TYPO3.lang['labels.inputfield.clearButton.title'];
+      } else {
+        const { default: labels } = await import('~labels/core.core');
+        clearButtonTitle = labels.get('labels.inputfield.clearButton.title');
       }
 
       const clearButton = Clearable.createCloseButton(clearButtonTitle);

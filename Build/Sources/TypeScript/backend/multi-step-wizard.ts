@@ -19,6 +19,7 @@ import Severity from './severity';
 import Icons from './icons';
 import { topLevelModuleImport } from './utility/top-level-module-import';
 import type { Stage } from '@typo3/backend/element/progress-tracker-element';
+import wizardLabels from '~labels/core.wizard';
 
 type SlideCallback = ($slide: JQuery, settings: MultiStepWizardSettings, identifier: string) => void;
 
@@ -123,10 +124,10 @@ class MultiStepWizard {
     processingSlide.append(document.createRange().createContextualFragment(spinnerIcon));
 
     this.addSlide(
-      'final-processing-slide', top.TYPO3.lang['wizard.processing.title'],
+      'final-processing-slide', wizardLabels.get('wizard.processing.title'),
       processingSlide,
       Severity.notice,
-      top.TYPO3.lang['wizard.progressStep.finish'],
+      wizardLabels.get('wizard.progressStep.finish'),
       callback,
     );
   }
@@ -144,7 +145,7 @@ class MultiStepWizard {
       severity: firstSlide.severity,
       staticBackdrop: true,
       buttons: [{
-        text: top.TYPO3.lang['wizard.button.cancel'],
+        text: wizardLabels.get('wizard.button.cancel'),
         active: true,
         btnClass: 'btn-default',
         name: 'cancel',
@@ -152,11 +153,11 @@ class MultiStepWizard {
           this.getComponent().trigger('wizard-dismiss');
         },
       }, {
-        text: top.TYPO3.lang['wizard.button.prev'],
+        text: wizardLabels.get('wizard.button.prev'),
         btnClass: 'btn-' + Severity.getCssClass(firstSlide.severity),
         name: 'prev',
       }, {
-        text: top.TYPO3.lang['wizard.button.next'],
+        text: wizardLabels.get('wizard.button.next'),
         btnClass: 'btn-' + Severity.getCssClass(firstSlide.severity),
         name: 'next',
       }],
@@ -394,7 +395,7 @@ class MultiStepWizard {
     this.setup.$carousel.data('currentSlide', nextSlideNumber);
     this.setup.$carousel.data('currentIndex', nextIndex);
 
-    $nextButton.text(top.TYPO3.lang['wizard.button.next']);
+    $nextButton.text(wizardLabels.get('wizard.button.next'));
 
     const progressTracker = $modal.find('typo3-backend-progress-tracker');
     progressTracker.attr('active', nextIndex + 1);

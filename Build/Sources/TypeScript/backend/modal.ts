@@ -26,6 +26,8 @@ import AjaxRequest from '@typo3/core/ajax/ajax-request';
 import Severity from './severity';
 import '@typo3/backend/element/icon-element';
 import '@typo3/backend/element/spinner-element';
+import coreLabels from '~labels/core.core';
+import listLabels from '~labels/core.mod_web_list';
 
 export enum Identifiers {
   modal = '.t3js-modal',
@@ -214,7 +216,7 @@ export class ModalElement extends LitElement {
             ${this.hideCloseButton ? nothing : html`
               <button class="modal-header-close t3js-modal-close" @click=${() => this.hideModal()}>
                 <typo3-backend-icon identifier="actions-close" size="small"></typo3-backend-icon>
-                <span class="visually-hidden">${(TYPO3?.lang?.['button.close'] || 'Close') + ' ' + this.modalTitle}</span>
+                <span class="visually-hidden">${(listLabels.get('button.close')) + ' ' + this.modalTitle}</span>
               </button>
             `}
           </div>
@@ -484,13 +486,13 @@ class Modal {
     if (buttons.length === 0) {
       buttons.push(
         {
-          text: TYPO3?.lang?.['button.cancel'] || 'Cancel',
+          text: listLabels.get('button.cancel'),
           active: true,
           btnClass: 'btn-default',
           name: 'cancel',
         },
         {
-          text: TYPO3?.lang?.['button.ok'] || 'OK',
+          text: listLabels.get('button.ok'),
           btnClass: 'btn-' + Severity.getCssClass(severity),
           name: 'ok',
         },
@@ -628,7 +630,7 @@ class Modal {
       if ('bsContent' in triggerElement.dataset && !('content' in triggerElement.dataset)) {
         console.error('TYPO3 v14 modal trigger dropped support for the legacy `data-bs-content` attribute. Use `data-content` instead. Affected element:', triggerElement);
       }
-      const content = triggerElement.dataset.content || TYPO3?.lang?.['message.confirmation'] || 'Are you sure?';
+      const content = triggerElement.dataset.content || coreLabels.get('message.confirmation');
       let severity = SeverityEnum.notice;
       if (triggerElement.dataset.severity in SeverityEnum) {
         const severityKey = triggerElement.dataset.severity as keyof typeof SeverityEnum;
@@ -663,7 +665,7 @@ class Modal {
         staticBackdrop,
         buttons: [
           {
-            text: triggerElement.dataset.buttonCloseText || TYPO3?.lang?.['button.close'] || 'Close',
+            text: triggerElement.dataset.buttonCloseText || listLabels.get('button.close'),
             active: true,
             btnClass: 'btn-default',
             trigger: (e: Event, modal: ModalElement): void => {
@@ -675,7 +677,7 @@ class Modal {
             },
           },
           {
-            text: triggerElement.dataset.buttonOkText || TYPO3?.lang?.['button.ok'] || 'OK',
+            text: triggerElement.dataset.buttonOkText || listLabels.get('button.ok'),
             btnClass: 'btn-' + Severity.getCssClass(severity),
             trigger: (e: Event, modal: ModalElement): void => {
               modal.hideModal();

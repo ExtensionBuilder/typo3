@@ -25,6 +25,8 @@ import Utility from '@typo3/backend/utility';
 import { topLevelModuleImport } from '@typo3/backend/utility/top-level-module-import';
 import { html } from 'lit';
 import coreCommonLabels from '~labels/core.common';
+import listLabels from '~labels/core.mod_web_list';
+import layoutLabels from '~labels/backend.layout';
 
 /**
  * @exports @typo3/backend/context-menu-actions
@@ -74,7 +76,7 @@ class ContextMenuActions {
     }
     await topLevelModuleImport('@typo3/backend/element/qrcode-element.js');
     Modal.advanced({
-      title: TYPO3.lang['showPageQrCode.modalTitle'] || 'QR Code',
+      title: layoutLabels.get('showPageQrCode.modalTitle'),
       size: Modal.sizes.small,
       content: html`
         <div class="text-center">
@@ -88,7 +90,7 @@ class ContextMenuActions {
       `,
       buttons: [
         {
-          text: TYPO3.lang['button.close'] || 'Close',
+          text: listLabels.get('button.close'),
           btnClass: 'btn-default',
           name: 'close',
           trigger: (event: Event, modal: ModalElement) => modal.hideModal(),
@@ -227,7 +229,7 @@ class ContextMenuActions {
           name: 'cancel',
         },
         {
-          text: dataset.buttonOkText || TYPO3.lang['button.delete'] || 'Delete',
+          text: dataset.buttonOkText || listLabels.get('button.delete'),
           btnClass: 'btn-warning',
           name: 'delete',
         },

@@ -16,6 +16,7 @@ import 'tablesort.dotsep';
 import 'tablesort.number';
 import { IconElement } from './element/icon-element';
 import { Sizes } from './enum/icon-types';
+import coreLabels from '~labels/core.core';
 
 class TablesortWithButtons extends Tablesort {
   public init(el: HTMLTableElement, options: TablesortOptions) {
@@ -97,7 +98,7 @@ class TablesortWithButtons extends Tablesort {
         const dropdown = document.createElement('div');
         dropdown.classList.add('dropdown-menu');
 
-        const buttonSortAscTitle = top.TYPO3.lang['labels.sorting.asc'] || 'Sort ascending';
+        const buttonSortAscTitle = coreLabels.get('labels.sorting.asc');
         const buttonSortAsc = document.createElement('button');
         buttonSortAsc.classList.add('dropdown-item');
         buttonSortAsc.type = 'button';
@@ -121,7 +122,7 @@ class TablesortWithButtons extends Tablesort {
         buttonSortAscColumnWrap.appendChild(buttonSortAscColumnTitleWrap);
         dropdown.appendChild(buttonSortAsc);
 
-        const buttonSortDescTitle = top.TYPO3.lang['labels.sorting.desc'] || 'Sort descending';
+        const buttonSortDescTitle = coreLabels.get('labels.sorting.desc');
         const buttonSortDesc = document.createElement('button');
         buttonSortDesc.classList.add('dropdown-item');
         buttonSortDesc.type = 'button';

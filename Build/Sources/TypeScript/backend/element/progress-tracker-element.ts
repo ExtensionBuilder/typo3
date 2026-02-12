@@ -14,7 +14,7 @@
 import { css, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import { lll } from '@typo3/core/lit-helper';
+import labels from '~labels/backend.layout';
 
 export type Stage = string;
 
@@ -105,7 +105,7 @@ export class ProgressTrackerElement extends LitElement {
     return html`
       <div class="tracker" role="group" aria-describedby="tracker-details" style=${styles}>
         <div class="tracker-stage" id="tracker-stage" aria-live="polite">${currentStage}</div>
-        <div class="tracker-step" id="tracker-details">${lll('progressTracker.steps', this.activeStage, this.stages.length) || `Step ${this.activeStage} of ${this.stages.length}`}</div>
+        <div class="tracker-step" id="tracker-details">${labels.get('progressTracker.steps', [this.activeStage, this.stages.length]) || `Step ${this.activeStage} of ${this.stages.length}`}</div>
         <div class="tracker-bar" id="tracker-bar" aria-hidden="true"></div>
       </div>
     `;

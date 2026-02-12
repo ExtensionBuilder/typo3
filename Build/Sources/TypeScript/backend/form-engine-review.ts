@@ -19,6 +19,7 @@ import Popover from './popover';
 import { type Popover as BootstrapPopover, Tab as BootstrapTab } from 'bootstrap';
 import type { PostValidationEvent } from '@typo3/backend/form-engine-validation';
 import DomHelper from '@typo3/backend/utility/dom-helper';
+import backendAltDocLabels from '~labels/backend.alt_doc';
 
 /**
  * Module: @typo3/backend/form-engine-review
@@ -74,7 +75,7 @@ export class FormEngineReview {
     const button = document.createElement('button');
     button.type = 'button';
     button.classList.add('btn', 'btn-danger', 'btn-sm', 'hidden', this.toggleButtonClass);
-    button.title = TYPO3.lang['buttons.reviewFailedValidationFields'];
+    button.title = backendAltDocLabels.get('buttons.reviewFailedValidationFields');
     button.appendChild(icon);
 
     Popover.popover(button);

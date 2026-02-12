@@ -17,6 +17,7 @@ import Notification from '../notification';
 import Viewport from '../viewport';
 import RegularEvent from '@typo3/core/event/regular-event';
 import type { AjaxResponse } from '@typo3/core/ajax/ajax-response';
+import coreLabels from '~labels/core.core';
 
 enum Identifiers {
   containerSelector = '#typo3-cms-backend-backend-toolbaritems-clearcachetoolbaritem',
@@ -77,7 +78,7 @@ class ClearCacheMenu {
         }
       },
       (): void => {
-        Notification.error(TYPO3.lang['flushCaches.error'], TYPO3.lang['flushCaches.error.description']);
+        Notification.error(coreLabels.get('flushCaches.error'), coreLabels.get('flushCaches.error.description'));
       },
     ).finally((): void => {
       toolbarItemContainer.querySelector(Identifiers.toolbarIconSelector).replaceWith(existingIcon);

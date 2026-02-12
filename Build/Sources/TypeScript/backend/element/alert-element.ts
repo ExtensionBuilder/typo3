@@ -17,7 +17,7 @@ import { classMap, type ClassInfo } from 'lit/directives/class-map.js';
 import { SeverityEnum } from '@typo3/backend/enum/severity';
 import Severity from '../severity';
 import '@typo3/backend/element/icon-element';
-import { lll } from '@typo3/core/lit-helper';
+import listLabels from '~labels/core.mod_web_list';
 
 /**
  * * Module: @typo3/backend/element/alert-element
@@ -101,9 +101,9 @@ export class AlertElement extends LitElement {
 
   private renderDismissButton(): TemplateResult {
     return html`
-      <button type="button" class="close" data-bs-dismiss="alert" aria-label="${ lll('button.close') || 'Close'}">
+      <button type="button" class="close" data-bs-dismiss="alert" aria-label=${listLabels.get('button.close')}>
         <span aria-hidden="true"><typo3-backend-icon identifier="actions-close" size="small"></typo3-backend-icon></span>
-        <span class="visually-hidden">${ lll('button.close') || 'Close'}</span>
+        <span class="visually-hidden">${listLabels.get('button.close')}</span>
       </button>
     `;
   }

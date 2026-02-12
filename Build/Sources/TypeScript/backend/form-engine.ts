@@ -872,11 +872,11 @@ export default (function() {
    */
   FormEngine.preventSaveIfHasErrors = function(): boolean {
     if ($('.has-error').length > 0) {
-      const title = TYPO3.lang['label.alert.save_with_error.title'] || 'You have errors in your form!';
-      const content = TYPO3.lang['label.alert.save_with_error.content'] || 'Please check the form, there is at least one error in your form.';
+      const title = backendAltDocLabels.get('label.alert.save_with_error.title');
+      const content = backendAltDocLabels.get('label.alert.save_with_error.content');
       const modal = Modal.confirm(title, content, Severity.error, [
         {
-          text: TYPO3.lang['buttons.alert.save_with_error.ok'] || 'OK',
+          text: backendAltDocLabels.get('buttons.alert.save_with_error.ok'),
           btnClass: 'btn-danger',
           name: 'ok'
         }

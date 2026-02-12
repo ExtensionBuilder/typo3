@@ -19,6 +19,7 @@ import ThrottleEvent from '@typo3/core/event/throttle-event';
 import type { PostValidationEvent } from '@typo3/backend/form-engine-validation';
 import type { DateConfiguration } from '@typo3/backend/type/date-configuration';
 import '@typo3/backend/input/clearable';
+import coreLabels from '~labels/core.core';
 
 const ISO8601_LOCALTIME = 'ISO8601_LOCALTIME';
 
@@ -237,7 +238,7 @@ class DateTimePicker {
           theme: 'typo3',
           button: [
             {
-              label: top.TYPO3.lang['labels.datepicker.today'] || 'Today'
+              label: coreLabels.get('labels.datepicker.today')
             },
           ],
           onClick: (index: number, fp: flatpickr.Instance) => {
