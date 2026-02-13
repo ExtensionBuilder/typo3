@@ -162,7 +162,7 @@ export default (function() {
     consumeTypes: ['typo3.setUrl', 'typo3.beforeSetUrl', 'typo3.refresh'],
     Validation: FormEngineValidation,
     interactionRequestMap: InteractionRequestMap,
-    formName: TYPO3.settings.FormEngine.formName,
+    formName: 'editform',
     formElement: undefined,
     openedPopupWindow: null,
     browserUrl: '',
