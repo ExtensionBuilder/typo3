@@ -27,6 +27,17 @@ The theme also comes with a range of content elements, including standard TYPO3
 content elements and bespoke content elements created specifically for the
 Camino theme.
 
+Language navigation
+===================
+
+Camino provides a language navigation in the page header.
+
+The navigation uses the configured site languages and renders the active language
+as plain text. Available alternative languages are rendered as links.
+
+This makes the language switch available in the main navigation area of the
+frontend without additional setup.
+
 ..  _ongoing-changes:
 
 ===============

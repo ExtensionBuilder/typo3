@@ -9,6 +9,9 @@
       <trans-unit id="menu.main.label">
         <source>Main menu</source>
       </trans-unit>
+      <trans-unit id="menu.language.label">
+        <source>Language menu</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

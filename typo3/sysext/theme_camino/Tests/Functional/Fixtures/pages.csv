@@ -1,0 +1,6 @@
+pages,,,,,,,,,
+,uid,pid,title,deleted,slug,perms_everybody,sys_language_uid,l10n_parent,doktype
+,1,0,Root,0,"/",15,0,0,1
+,2,1,Subpage,0,"/subpage",15,0,0,1
+,101,0,Root DE,0,"/",15,1,1,1
+,102,1,Subpage DE,0,"/subpage",15,1,2,1

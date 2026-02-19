@@ -1,0 +1,84 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<div class="header__language-nav" role="navigation" aria-label="{f:translate(domain: 'theme_camino.messages', key: 'menu.language.label')}">
+    <div class="header__language-dropdown JS_header-language-dropdown">
+        <f:variable name="activeLanguageTitle">
+            <f:translate domain="theme_camino.messages" key="menu.language.label"/>
+        </f:variable>
+        <f:for each="{languageNavigation}" as="languageItem">
+            <f:if condition="{languageItem.active}">
+                <f:variable name="activeLanguageTitle">
+                    <f:render section="LanguageNavigationTitle" arguments="{languageItem: languageItem}"/>
+                </f:variable>
+            </f:if>
+        </f:for>
+
+        <button
+            type="button"
+            id="header-language-button"
+            class="header__language-button JS_header-language-button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="header-language-menu"
+            aria-label="{f:translate(domain: 'theme_camino.messages', key: 'menu.language.label')}"
+        >
+            <span class="header__language-button-icon header__language-button-icon--globe">
+                <f:render partial="Icon" arguments="{icon: 'globe'}"/>
+            </span>
+            <span class="header__language-button-text JS_header-language-current">
+                {activeLanguageTitle}
+            </span>
+            <span class="header__language-button-icon header__language-button-icon--chevron">
+                <f:render partial="Icon" arguments="{icon: 'chevron'}"/>
+            </span>
+        </button>
+
+        <ul id="header-language-menu" class="header__language-menu JS_header-language-menu" aria-hidden="true">
+            <f:for each="{languageNavigation}" as="languageItem">
+                <li class="header__language-menu-item">
+                    <f:if condition="{languageItem.available}">
+                        <f:then>
+                            <f:if condition="{languageItem.active}">
+                                <f:then>
+                                    <f:link.typolink
+                                        parameter="{languageItem.link}"
+                                        class="header__language-menu-link header__language-menu-link--active"
+                                        additionalAttributes="{lang: languageItem.hreflang, hreflang: languageItem.hreflang, aria-current: 'page'}"
+                                    >
+                                        <f:render section="LanguageNavigationTitle" arguments="{languageItem: languageItem}"/>
+                                    </f:link.typolink>
+                                </f:then>
+                                <f:else>
+                                    <f:link.typolink
+                                        parameter="{languageItem.link}"
+                                        class="header__language-menu-link"
+                                        additionalAttributes="{lang: languageItem.hreflang, hreflang: languageItem.hreflang}"
+                                    >
+                                        <f:render section="LanguageNavigationTitle" arguments="{languageItem: languageItem}"/>
+                                    </f:link.typolink>
+                                </f:else>
+                            </f:if>
+                        </f:then>
+                        <f:else>
+                            <span class="header__language-menu-link header__language-menu-link--disabled" lang="{languageItem.hreflang}" aria-disabled="true">
+                                <f:render section="LanguageNavigationTitle" arguments="{languageItem: languageItem}"/>
+                            </span>
+                        </f:else>
+                    </f:if>
+                </li>
+            </f:for>
+        </ul>
+    </div>
+</div>
+
+<f:section name="LanguageNavigationTitle">
+    <f:if condition="{languageItem.navigationTitle}">
+        <f:then>{languageItem.navigationTitle}</f:then>
+        <f:else>{languageItem.title}</f:else>
+    </f:if>
+</f:section>
+
+</html>

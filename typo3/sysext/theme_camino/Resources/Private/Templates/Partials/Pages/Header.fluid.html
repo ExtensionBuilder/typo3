@@ -28,6 +28,10 @@
                         </f:for>
                     </ul>
                 </f:if>
+
+                <f:if condition="{languageNavigation}">
+                    <f:render partial="Pages/LanguageNavigation" arguments="{languageNavigation: languageNavigation}"/>
+                </f:if>
             </nav>
         </div>
     </div>

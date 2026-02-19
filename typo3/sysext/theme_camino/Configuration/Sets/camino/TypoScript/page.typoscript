@@ -18,6 +18,12 @@ lib.fluidPage {
       dataProcessing.10 = record-transformation
     }
 
+    1768567093 = language-menu
+    1768567093 {
+      as = languageNavigation
+      languages = auto
+    }
+
     1767692750 = site
     1767692750.as = site
   }
