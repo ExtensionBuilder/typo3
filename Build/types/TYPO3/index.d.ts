@@ -54,8 +54,6 @@ declare namespace TYPO3 {
     export namespace FormEngine {
       export const moduleUrl: string;
       export const formName: string;
-
-      export const doSaveFieldName: string;
     }
     export namespace FormEngineInline {
       export const config: {

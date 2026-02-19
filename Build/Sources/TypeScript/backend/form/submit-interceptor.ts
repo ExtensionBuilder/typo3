@@ -38,6 +38,7 @@ export default class SubmitInterceptor {
 
   private submitHandler(e: SubmitEvent): void {
     if (this.isSubmitting) {
+      e.preventDefault();
       return;
     }
 
@@ -51,12 +52,13 @@ export default class SubmitInterceptor {
 
     this.isSubmitting = true;
 
-    if (e.submitter !== null) {
-      if (e.submitter instanceof HTMLInputElement || e.submitter instanceof HTMLButtonElement) {
-        e.submitter.disabled = true;
-      }
+    if (e.submitter !== null && (e.submitter instanceof HTMLInputElement || e.submitter instanceof HTMLButtonElement)) {
+      const submitter = e.submitter;
+      // Visually disable the submitter without using the `disabled` attribute,
+      // as a disabled button would not submit its name/value as form data.
+      submitter.classList.add('disabled');
       Icons.getIcon('spinner-circle', Icons.sizes.small).then((markup: string): void => {
-        e.submitter.replaceChild(document.createRange().createContextualFragment(markup), e.submitter.querySelector('.t3js-icon'));
+        submitter.replaceChild(document.createRange().createContextualFragment(markup), submitter.querySelector('.t3js-icon'));
       }).catch(() => {
         // Catch error in case the promise was not resolved
         // e.g. loading a new page
