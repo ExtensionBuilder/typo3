@@ -35,7 +35,7 @@ async function parsePath(path) {
     const setName = pathParts.shift();
     return {
       domain: domain,
-      resource: 'sets.' + convertCamelToSnake(setName),
+      resource: 'sets.' + convertCamelAndHyphensToSnake(setName),
     };
   }
 
@@ -44,7 +44,7 @@ async function parsePath(path) {
     pathParts.shift();
     pathParts.shift();
   }
-  const namespace = pathParts.map(convertCamelToSnake).map(path => path + '.').join('');
+  const namespace = pathParts.map(convertCamelAndHyphensToSnake).map(path => path + '.').join('');
   const name = filename === 'locallang'
     ? 'messages'
     : (
@@ -68,12 +68,12 @@ async function parsePath(path) {
 
   return {
     domain,
-    resource: namespace + convertCamelToSnake(name),
+    resource: namespace + convertCamelAndHyphensToSnake(name),
   };
 }
 
-function convertCamelToSnake(str) {
-  return str.replace(/([a-zA-Z])(?=[A-Z])/g,'$1_').toLowerCase();
+function convertCamelAndHyphensToSnake(str) {
+  return str.replace(/([a-zA-Z])(?=[A-Z])/g,'$1_').replace(/-/g, '_').toLowerCase();
 }
 
 function createTypeScriptDeclaration(labels) {
