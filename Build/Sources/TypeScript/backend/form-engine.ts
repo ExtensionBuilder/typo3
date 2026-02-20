@@ -609,7 +609,9 @@ export default (function() {
     const addOrUpdateCounter = (minCharacterCountLeft: string, event: Event) => {
       const parent = (event.currentTarget as HTMLInputElement).closest('.t3js-formengine-field-item');
       const counter = parent.querySelector('.t3js-charcounter-min');
-      const labelValue = coreCoreLabels.get('labels.remainingCharacters').replace('{0}', minCharacterCountLeft);
+      const labelValue = coreCoreLabels.get('labels.remainingCharacters', {
+        '0': minCharacterCountLeft
+      });
       if (counter) {
         counter.querySelector('span').innerHTML = labelValue;
       } else {

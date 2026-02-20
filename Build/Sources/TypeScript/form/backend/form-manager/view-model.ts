@@ -92,7 +92,7 @@ function removeFormSetup(formManagerApp: FormManager): void {
 
     Modal.show(
       formManagerLabels.get('formManager.remove_form_title'),
-      formManagerLabels.get('formManager.remove_form_message').replace('{0}', that.data('formName')),
+      formManagerLabels.get('formManager.remove_form_message', { '0': that.data('formName') }),
       Severity.error ,
       modalButtons
     );
@@ -116,7 +116,7 @@ function duplicateFormSetup(formManagerApp: FormManager): void {
         ></typo3-backend-form-wizard>
     `;
     Modal.advanced({
-      title: formManagerLabels.get('formManager.duplicateFormWizard.step1.title').replace('{0}', formElement.data('formName')),
+      title: formManagerLabels.get('formManager.duplicateFormWizard.step1.title', { '0': formElement.data('formName') }),
       content: content,
       severity: SeverityEnum.notice,
       size: Modal.sizes.medium,
@@ -150,7 +150,7 @@ function showReferencesSetup(formManagerApp: FormManager): void {
       const editIconMarkup = await Icons.getIcon('actions-open', Icons.sizes.small);
 
       if (referencesLength > 0) {
-        html = '<h2 class="h3">' + formManagerLabels.get('formManager.references.headline').replace('{0}', securityUtility.encodeHtml($that.data('formName'))) + '</h2>'
+        html = '<h2 class="h3">' + formManagerLabels.get('formManager.references.headline') + '</h2>'
           + '<div class="table-fit">'
           + '<table id="forms" class="table table-striped table-hover">'
           + '<thead>'
@@ -185,7 +185,7 @@ function showReferencesSetup(formManagerApp: FormManager): void {
           + '</div>';
       } else {
         html = '<div>'
-          + '<h1>' + formManagerLabels.get('formManager.references.title').replace('{0}', securityUtility.encodeHtml(data.formPersistenceIdentifier)) + '</h1>'
+          + '<h1>' + formManagerLabels.get('formManager.references.title', { '0': securityUtility.encodeHtml(data.formPersistenceIdentifier) }) + '</h1>'
           + '</div>'
           + '<div>' + formManagerLabels.get('formManager.no_references') + '</div>';
       }
@@ -198,7 +198,7 @@ function showReferencesSetup(formManagerApp: FormManager): void {
       });
 
       Modal.show(
-        formManagerLabels.get('formManager.references.title').replace('{0}', $that.data('formName')),
+        formManagerLabels.get('formManager.references.title', { '0': $that.data('formName') }),
         html,
         Severity.notice,
         modalButtons

@@ -141,9 +141,9 @@ class Repository {
           });
         } else {
           let successMessage = (data.isAutomaticInstallationEnabled ?
-            labels.get('extensionList.dependenciesResolveDownloadSuccess.message') :
-            labels.get('extensionList.dependenciesResolveDownloadSuccess.message.downloadOnly')
-          ).replace(/\{0\}/g, data.extension);
+            labels.get('extensionList.dependenciesResolveDownloadSuccess.message', { '0': data.extension }) :
+            labels.get('extensionList.dependenciesResolveDownloadSuccess.message.downloadOnly', { '0': data.extension })
+          );
 
           successMessage += '\n' + labels.get('extensionList.dependenciesResolveDownloadSuccess.header') + ': ';
           for (const [index, value] of Object.entries(data.result)) {
@@ -154,9 +154,9 @@ class Repository {
           }
           Notification.info(
             (data.isAutomaticInstallationEnabled ?
-              labels.get('extensionList.dependenciesResolveFlashMessage.title') :
-              labels.get('extensionList.dependenciesResolveFlashMessage.title.downloadOnly')
-            ).replace(/\{0\}/g, data.extension),
+              labels.get('extensionList.dependenciesResolveFlashMessage.title', { '0': data.extension }) :
+              labels.get('extensionList.dependenciesResolveFlashMessage.title.downloadOnly', { '0': data.extension })
+            ),
             successMessage,
             15,
           );

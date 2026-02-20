@@ -162,6 +162,7 @@
     "dompurify": "^3.2.4",
     "flatpickr": "^4.6.13",
     "interactjs": "^1.10.17",
+    "intl-messageformat": "^11.1.2",
     "jquery": "^3.7.1",
     "lit": "^3.2.0",
     "lit-element": "^4.1.0",

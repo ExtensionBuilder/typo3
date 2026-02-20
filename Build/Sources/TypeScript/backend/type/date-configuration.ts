@@ -23,6 +23,8 @@ export interface DateConfiguration {
   formats: {
     /** Date format string (e.g., "yyyy-MM-dd") */
     date: string;
+    /** Time format string (e.g., "HH:mm") */
+    time: string;
     /** DateTime format string (e.g., "yyyy-MM-dd HH:mm") */
     datetime: string;
   };

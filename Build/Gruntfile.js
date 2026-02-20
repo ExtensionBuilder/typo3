@@ -463,6 +463,7 @@ module.exports = function (grunt) {
     esbuild: Object.fromEntries(Object.entries({
       core: [
         'autosize',
+        { name: 'intl-messageformat', bundle: true },
         'cropperjs',
         { name: 'css-tree', bundle: true },
         'dompurify',

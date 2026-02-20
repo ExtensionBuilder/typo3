@@ -1,5 +1,6 @@
 import { basename } from 'path';
 import { readFile, writeFile, access, constants } from 'fs/promises';
+import { parse, TYPE } from '@formatjs/icu-messageformat-parser';
 import sax from 'sax';
 
 function parseLabelTypes(content, input) {
@@ -51,7 +52,56 @@ function resolveTypes(label, input) {
     return [...label.matchAll(/%([sdf])/g)].map(match => mapping[match[1]]);
   }
 
-  return null;
+  try {
+    return resolveMessageParameterTypesFromAst(parse(label));
+  } catch (e) {
+    //console.log('Failed to parse', input, e);
+    return null;
+  }
+}
+
+function resolveMessageParameterTypesFromAst(messageFormatElements) {
+  let parameters = {};
+
+  for (const formatElement of messageFormatElements) {
+    switch (formatElement.type) {
+    case TYPE.literal:
+      break;
+    case TYPE.argument:
+      parameters[formatElement.value] = 'string';
+      break;
+    case TYPE.number:
+      parameters[formatElement.value] = 'number';
+      break;
+    case TYPE.date:
+    case TYPE.time:
+      parameters[formatElement.value] = 'Date';
+      break;
+
+    case TYPE.plural:
+    case TYPE.select:
+      parameters[formatElement.value] = formatElement.type === TYPE.plural ? 'number' : 'string';
+      Object.assign(
+        parameters,
+        ...Object.entries(formatElement.options).map(([key, elements]) => resolveMessageParameterTypesFromAst(elements.value))
+      );
+      break;
+
+    case TYPE.pound:
+      // This is "#" inside plural => ignore
+      break;
+
+    case TYPE.tag:
+      parameters[formatElement.value] = '(chunks: unknown[]) => unknown';
+      parameters = {
+        ...parameters,
+        ...resolveMessageParameterTypesFromAst(formatElement.children),
+      };
+      break;
+    }
+  }
+
+  return parameters;
 }
 
 export async function generate(input) {
@@ -131,7 +181,7 @@ function renderParameterTypes(parameters) {
   if (parameters === null || Object.entries(parameters).length === 0) {
     return 'undefined';
   }
-  throw new Error('Unexpected parameters type: ' + typeof parameters);
+  return '{ ' + Object.entries(parameters).map(([key, value]) => `'${key}': ${value}`).join(', ') + ' }';
 }
 
 function createTypeScriptDeclaration(labels) {

@@ -558,7 +558,9 @@ class Backend extends Workspaces {
 
       Modal.advanced({
         type: Modal.types.default,
-        title: labels.get('window.recordInformation').replace('{0}', (tableRow.querySelector('.t3js-title-workspace') as HTMLElement).innerText.trim()),
+        title: labels.get('window.recordInformation', {
+          '0': (tableRow.querySelector('.t3js-title-workspace') as HTMLElement).innerText.trim()
+        }),
         content: content,
         severity: SeverityEnum.info,
         buttons: modalButtons,

@@ -14,7 +14,6 @@
 import { customElement, property } from 'lit/decorators.js';
 import { html, LitElement, nothing } from 'lit';
 import type { Diff } from './diff-view';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import '@typo3/workspaces/renderable/diff-view';
 import '@typo3/workspaces/renderable/comment-view';
 import '@typo3/workspaces/renderable/history-view';
@@ -51,8 +50,8 @@ export class RecordInformationElement extends LitElement {
   protected override render() {
     return html`
       <div>
-        <p>${unsafeHTML(labels.get('path').replace('{0}', this.record.path_Live))}</p>
-        <p>${unsafeHTML(labels.get('current_step').replace('{0}', this.record.label_Stage).replace('{1}', this.record.stage_position).replace('{2}', this.record.stage_count))}</p>
+        <p>${labels.render('path', { '0': this.record.path_Live, b: chunks => html`<strong>${chunks}</strong>` })}</p>
+        <p>${labels.render('current_step', { '0': this.record.label_Stage, '1': this.record.stage_position, '2': this.record.stage_count, b: chunks => html`<strong>${chunks}</strong>` })}</p>
         <ul class="nav nav-tabs" role="tablist">
           ${ this.record.diff.length > 0 ? this.renderNavLink(labels.get('window.recordChanges.tabs.changeSummary'), '#workspace-changes') : nothing}
           ${ this.record.comments.length > 0 ? this.renderNavLink(labels.get('window.recordChanges.tabs.changeSummary'), '#workspace-comments', this.record.comments.length) : nothing}
