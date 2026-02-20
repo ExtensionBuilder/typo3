@@ -1,5 +1,58 @@
 import { basename } from 'path';
 import { readFile, writeFile, access, constants } from 'fs/promises';
+import sax from 'sax';
+
+function parseLabelTypes(content, input) {
+  const parser = sax.parser(true);
+  const labels = [];
+  let id = null;
+  let isSource = false;
+  let isDeprecated = false;
+  parser.onclosetag = () => {
+    isSource = false;
+  };
+  parser.onopentag = (node) => {
+    isSource = node.name === 'source';
+    // xliff 2.x
+    if (node.name === 'unit') {
+      id = node.attributes.id;
+    }
+    if (node.name === 'segment') {
+      isDeprecated = (node.attributes.subState ?? '') === 'deprecated';
+    }
+    // xliff 1.x
+    if (node.name === 'trans-unit') {
+      id = node.attributes.id;
+      isDeprecated = 'x-unused-since' in node.attributes;
+    }
+  };
+  parser.oncdata = text => {
+    if (isSource && !isDeprecated) {
+      labels[id] = (labels[id] ?? '') + text;
+    }
+  };
+  parser.ontext = text => {
+    if (isSource && !isDeprecated) {
+      labels[id] = text;
+    }
+  };
+  parser.write(content).close();
+
+  return Object.fromEntries(Object.entries(labels).map(([key, label]) => [key, resolveTypes(label, input)]));
+}
+
+function resolveTypes(label, input) {
+  if (label.includes('%s') || label.includes('%d') || label.includes('%f')) {
+    const mapping = {
+      s: 'string',
+      d: 'number',
+      f: 'number'
+    };
+    return [...label.matchAll(/%([sdf])/g)].map(match => mapping[match[1]]);
+  }
+
+  return null;
+}
 
 export async function generate(input) {
   const { domain, resource } = await parsePath(input);
@@ -9,16 +62,11 @@ export async function generate(input) {
   }
   const targetFile = `types/labels/${domain}.${resource}.d.ts`;
   const content = await readFile(input, 'utf8');
-  // @todo switch to a real XML parser,
-  // parse possible required parameters and generate
-  // types that reflect the required parameters
-  // (out of scope for now)
-  const labels = [...content.matchAll(/<trans-unit id="([^"]+)"/g)].map(match => match[1]);
-  if (labels.length === 0) {
+  const labels = parseLabelTypes(content, input);
+  if (Object.entries(labels).length === 0) {
     // Skip if the labels are empty (e.g. deprecated label file)
     return;
   }
-
   const declaration = createTypeScriptDeclaration(labels);
   await writeFile(targetFile, declaration, { flag: 'w' });
 }
@@ -76,10 +124,20 @@ function convertCamelAndHyphensToSnake(str) {
   return str.replace(/([a-zA-Z])(?=[A-Z])/g,'$1_').replace(/-/g, '_').toLowerCase();
 }
 
+function renderParameterTypes(parameters) {
+  if (Array.isArray(parameters)) {
+    return '[ ' + parameters.join(', ') + ' ]';
+  }
+  if (parameters === null || Object.entries(parameters).length === 0) {
+    return 'undefined';
+  }
+  throw new Error('Unexpected parameters type: ' + typeof parameters);
+}
+
 function createTypeScriptDeclaration(labels) {
   return `import { LabelProvider } from '@typo3/backend/localization/label-provider';
 type Labels = {
-${labels.map(label => `  '${label}': string,`).join("\n")}
+${Object.entries(labels).map(([label, parameters]) => `  '${label}': ${renderParameterTypes(parameters)}`).join(",\n")}
 };
 declare const provider: LabelProvider<Labels>;
 export default provider;

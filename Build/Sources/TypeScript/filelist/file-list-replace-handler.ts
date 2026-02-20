@@ -40,7 +40,7 @@ class FileListReplaceHandler {
       const detail: FileListActionDetail = event.detail;
       const resource = detail.resources[0];
       const modal = Modal.advanced({
-        title: labels.get('file_replace.title', resource.name),
+        title: labels.get('file_replace.title', [resource.name]),
         type: Modal.types.default,
         size: Modal.sizes.small,
         content: html`${until(this.loadEditor(resource.identifier), html`<typo3-backend-spinner></typo3-backend-spinner>`)}`,
@@ -108,7 +108,7 @@ class FileListReplaceHandler {
 
     return html`
       <div class="file-replace-dialog">
-        ${labels.get('file_replace.intro', resource.name)}
+        ${labels.get('file_replace.intro', [resource.name])}
         <div
           class="file-replace-dialog-summary"
         >
@@ -133,7 +133,7 @@ class FileListReplaceHandler {
           </div>
           <div class="form-check">
             <input type="checkbox" value="1" id="keepFilename" name="keepFilename" class="form-check-input" checked>
-            <label class="form-check-label" for="keepFilename">${labels.get('file_replace.keepFilename.label', resource.name)}</label>
+            <label class="form-check-label" for="keepFilename">${labels.get('file_replace.keepFilename.label', [resource.name])}</label>
           </div>
         </form>
       </div>

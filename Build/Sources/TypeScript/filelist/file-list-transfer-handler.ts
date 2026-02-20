@@ -51,14 +51,10 @@ class FileListTransferHandler {
       if (detail.resources.length === 1) {
         const resource = detail.resources[0];
         modalTitle = labels.get('message.transfer_resource.title');
-        modalText = labels.get('message.transfer_resource.text')
-          .replace('%s', resource.name)
-          .replace('%s', target.name);
+        modalText = labels.get('message.transfer_resource.text', [resource.name, target.name]);
       } else {
         modalTitle = labels.get('message.transfer_resources.title');
-        modalText = labels.get('message.transfer_resources.text')
-          .replace('%d', resources.length.toString(10))
-          .replace('%s', target.name);
+        modalText = labels.get('message.transfer_resources.text', [resources.length, target.name]);
       }
 
       const modal = Modal.confirm(

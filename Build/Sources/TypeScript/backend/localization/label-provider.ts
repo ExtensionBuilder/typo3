@@ -11,18 +11,44 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-export class LabelProvider<Labels extends Record<string, string> = Record<string, string>> {
+type SprintfParameters = Array<string|number>;
+
+export class LabelProvider<LabelParameterMap extends Record<string, SprintfParameters|undefined>> {
   constructor(
-    private readonly labels: Labels
+    private readonly labels: Record<keyof LabelParameterMap, string>
   ) {}
 
-  public get(key: keyof Labels, ...args: Array<string|number>): string {
+  public get<K extends keyof LabelParameterMap>(
+    key: K,
+    // Workaround to ensure that TypeScript enforces the exact number of parameters
+    // Note: `args?` allows to omit parameters, when they are actually required.
+    ...args: (LabelParameterMap[K] extends undefined ? [] : [Readonly<LabelParameterMap[K]>])
+  ): string;
+
+  public get<K extends keyof LabelParameterMap>(
+    key: K,
+    args?: Readonly<LabelParameterMap[K]>,
+  ): string {
     if (!(key in this.labels)) {
       throw new Error('Label is not defined: ' + String(key));
     }
-    let index = 0;
+
+    const label = this.labels[key];
+
+    if (args === undefined) {
+      return label;
+    }
+
+    return this.sprintf(label, args);
+  }
+
+  private sprintf(
+    label: string,
+    args: Readonly<SprintfParameters>
+  ): string {
     // code taken from lit-helper
-    return this.labels[key].replace(/%[sdf]/g, (match) => {
+    let index = 0;
+    return label.replace(/%[sdf]/g, (match) => {
       const arg = args[index++];
       switch (match) {
         case '%s':

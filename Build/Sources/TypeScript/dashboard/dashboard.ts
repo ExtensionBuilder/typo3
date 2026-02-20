@@ -733,7 +733,7 @@ export class Dashboard extends LitElement {
 
     Modal.advanced({
       type: Modal.types.default,
-      title: labels.get('widget.addToDashboard', this.currentDashboard.title),
+      title: labels.get('widget.addToDashboard', [this.currentDashboard.title]),
       size: Modal.sizes.medium,
       severity: SeverityEnum.notice,
       content: wizard,
@@ -885,11 +885,11 @@ export class Dashboard extends LitElement {
       <div class="dashboard-add-item">
         <button
           class="btn btn-primary btn-dashboard-add-widget"
-          title=${labels.get('widget.addToDashboard', this.currentDashboard.title)}
+          title=${labels.get('widget.addToDashboard', [this.currentDashboard.title])}
           @click=${() => { this.addWidget(); }}
         >
           <typo3-backend-icon identifier="actions-plus" size="small"></typo3-backend-icon>
-          <span class="visually-hidden">${labels.get('widget.addToDashboard', this.currentDashboard.title)}</span>
+          <span class="visually-hidden">${labels.get('widget.addToDashboard', [this.currentDashboard.title])}</span>
         </button>
       </div>
     `;

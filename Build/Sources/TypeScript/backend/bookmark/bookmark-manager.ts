@@ -829,7 +829,7 @@ export class BookmarkManagerContentElement extends LitElement {
     const ids = Array.from(this.selectedIds);
     const confirmModal = Modal.confirm(
       labels.get('confirmDeleteMultiple.title'),
-      labels.get('confirmDeleteMultiple.message', ids.length),
+      labels.get('confirmDeleteMultiple.message', [ids.length]),
       SeverityEnum.notice,
       [
         {
@@ -847,7 +847,7 @@ export class BookmarkManagerContentElement extends LitElement {
             if (success) {
               Notification.success(
                 labels.get('success.deletedMultiple.title'),
-                labels.get('success.deletedMultiple.message', ids.length)
+                labels.get('success.deletedMultiple.message', [ids.length])
               );
               this.selectedIds = new Set();
             } else {
@@ -869,7 +869,7 @@ export class BookmarkManagerContentElement extends LitElement {
     if (success) {
       Notification.success(
         labels.get('success.moved.title'),
-        labels.get('success.moved.message', ids.length)
+        labels.get('success.moved.message', [ids.length])
       );
       this.selectedIds = new Set();
     } else {
@@ -953,7 +953,7 @@ export class BookmarkManagerContentElement extends LitElement {
 
     const confirmModal = Modal.confirm(
       labels.get('confirmDeleteGroup.title'),
-      labels.get('confirmDeleteGroup.message', group.label),
+      labels.get('confirmDeleteGroup.message', [group.label]),
       SeverityEnum.notice,
       [
         {

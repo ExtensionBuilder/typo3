@@ -294,7 +294,7 @@ class BookmarkStore {
 
     const confirmModal = Modal.confirm(
       labels.get('delete'),
-      labels.get('confirmDelete.title', bookmark.title),
+      labels.get('confirmDelete.title'),
       SeverityEnum.warning,
       [
         {

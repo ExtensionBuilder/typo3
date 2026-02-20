@@ -246,7 +246,7 @@ class SiteLanguageContainer extends HTMLElement {
       e.stopImmediatePropagation();
 
       const title = backendAltDocLabels.get('label.confirm.delete_record.title');
-      const content = backendAltDocLabels.get('label.confirm.delete_record.content', targetElement.dataset.recordInfo);
+      const content = backendAltDocLabels.get('label.confirm.delete_record.content', [targetElement.dataset.recordInfo]);
       Modal.confirm(title, content, Severity.warning, [
         {
           text: backendAltDocLabels.get('buttons.confirm.delete_record.no'),

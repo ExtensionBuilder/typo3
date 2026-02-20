@@ -165,7 +165,7 @@ export class CspReports extends LitElement {
                       @keydown=${(e: KeyboardEvent) => this.handleReportKeydown(e, report)}
                       tabindex="0"
                       role="button"
-                      aria-label="${labels.get('module.label.showDetails', report.details.effectiveDirective, report.details.blockedUri)}">
+                      aria-label="${labels.get('module.label.showDetails', [report.details.effectiveDirective, report.details.blockedUri])}">
                     <td>${report.created}</td>
                     <td>${report.scope}</td>
                     <td>
