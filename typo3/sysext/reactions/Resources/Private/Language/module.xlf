@@ -13,7 +13,7 @@
         <source>Manage incoming HTTP webhooks to external system</source>
       </trans-unit>
       <trans-unit id="description">
-        <source>Let external services trigger powerful actions in TYPO3! Create secure endpoints that respond to webhooks from GitHub, payment providers, form services, or any external platform. Automate workflows and keep content fresh without manual intervention.</source>
+        <source>Configure secure endpoints that allow external services to trigger actions in TYPO3. Respond to webhooks from GitHub, payment providers, form services, and other platforms to automate workflows.</source>
       </trans-unit>
       <trans-unit id="heading_text">
         <source>Reactions — Manage Incoming HTTP Webhooks</source>
