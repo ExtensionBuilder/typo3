@@ -11,7 +11,6 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import { lll } from '@typo3/core/lit-helper';
 import Modal from '@typo3/backend/modal';
 import '@typo3/backend/element/icon-element';
 import '@typo3/backend/live-search/element/hint';
@@ -28,6 +27,7 @@ import { componentName as resultContainerComponentName, type ResultContainer } f
 import { ModuleStateStorage } from '@typo3/backend/storage/module-state-storage';
 import type { ResultItemInterface } from '@typo3/backend/live-search/element/result/item/item';
 import type { Pagination, ResultPagination } from '@typo3/backend/live-search/element/result/result-pagination';
+import coreLabels from '~labels/core.core';
 
 interface SearchOption {
   key: string;
@@ -103,7 +103,7 @@ class LiveSearch {
     const modal = Modal.advanced({
       type: Modal.types.ajax,
       content: url.toString(),
-      title: lll('labels.search'),
+      title: coreLabels.get('labels.search'),
       severity: SeverityEnum.notice,
       size: Modal.sizes.medium,
       ajaxCallback: (): void => {

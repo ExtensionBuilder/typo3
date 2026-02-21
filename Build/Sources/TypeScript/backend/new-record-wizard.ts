@@ -17,7 +17,6 @@ import Modal from '@typo3/backend/modal';
 import '@typo3/backend/element/icon-element';
 import AjaxRequest from '@typo3/core/ajax/ajax-request';
 import type { AjaxResponse } from '@typo3/core/ajax/ajax-response';
-import { lll } from '@typo3/core/lit-helper';
 import Notification from '@typo3/backend/notification';
 import Viewport from '@typo3/backend/viewport';
 import RegularEvent from '@typo3/core/event/regular-event';
@@ -25,6 +24,7 @@ import { KeyTypesEnum } from '@typo3/backend/enum/key-types';
 import { RecordUsageStore } from '@typo3/backend/record-usage/record-usage-store';
 import ClientStorage from '@typo3/backend/storage/client';
 import PersistentStorage from '@typo3/backend/storage/persistent';
+import miscLabels from '~labels/core.misc';
 
 type RequestType = 'location' | 'ajax' | 'event' | undefined;
 
@@ -399,9 +399,9 @@ export class NewRecordWizard extends LitElement {
       },
     }
   }) categories: Categories = new Categories([]);
-  @property({ type: String }) searchPlaceholder: string = 'newRecordWizard.filter.placeholder';
-  @property({ type: String }) searchNothingFoundLabel: string = 'newRecordWizard.filter.noResults';
-  @property({ type: String }) userNotAllowedLabel: string = 'newContentElement.filter.userNotAllowed';
+  @property({ type: String }) searchPlaceholder: string = miscLabels.get('newRecordWizard.filter.placeholder');
+  @property({ type: String }) searchNothingFoundLabel: string = miscLabels.get('newRecordWizard.filter.noResults');
+  @property({ type: String }) userNotAllowedLabel: string = miscLabels.get('newContentElement.filter.userNotAllowed');
   @property({
     type: Boolean,
     converter: booleanConverter
@@ -470,7 +470,7 @@ export class NewRecordWizard extends LitElement {
     if (recentlyUsedItems.length > 0) {
       const recentlyUsedCategory = new Category(
         'recently-used',
-        this.getLanguageLabel('newRecordWizard.recentlyUsed'),
+        miscLabels.get('newRecordWizard.recentlyUsed'),
         recentlyUsedItems,
         'actions-history',
         true
@@ -478,15 +478,6 @@ export class NewRecordWizard extends LitElement {
 
       this.categories.items.unshift(recentlyUsedCategory);
     }
-  }
-
-  protected getLanguageLabel(label: string): string {
-    const languageLabel = lll(label);
-    if (languageLabel !== '') {
-      return languageLabel;
-    }
-
-    return label;
   }
 
   protected selectAvailableCategory(): void {
@@ -511,12 +502,12 @@ export class NewRecordWizard extends LitElement {
     this.messages = [];
     if (this.categories.items.length === 0) {
       this.messages = [{
-        message: this.getLanguageLabel(this.userNotAllowedLabel),
+        message: this.userNotAllowedLabel,
         severity: 'info'
       }];
     } else if (this.selectedCategory === null) {
       this.messages = [{
-        message: this.getLanguageLabel(this.searchNothingFoundLabel),
+        message: this.searchNothingFoundLabel,
         severity: 'info'
       }];
     }
@@ -581,7 +572,7 @@ export class NewRecordWizard extends LitElement {
           .value="${this.searchTerm}"
           @input="${(event: InputEvent): void => { this.filter((<HTMLInputElement>event.target).value); }}"
           @keydown="${(event: KeyboardEvent): void => { if (event.key === KeyTypesEnum.ESCAPE) { event.stopImmediatePropagation(); this.filter(''); } }}"
-          placeholder="${this.getLanguageLabel(this.searchPlaceholder)}"
+          placeholder=${this.searchPlaceholder}
         />
       </form>
     `;

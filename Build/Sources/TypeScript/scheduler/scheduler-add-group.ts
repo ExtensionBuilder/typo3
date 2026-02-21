@@ -17,7 +17,7 @@ import AjaxRequest from '@typo3/core/ajax/ajax-request';
 import type { AjaxResponse } from '@typo3/core/ajax/ajax-response';
 import type ResponseInterface from '@typo3/backend/ajax-data-handler/response-interface';
 import Notification from '@typo3/backend/notification';
-import { lll } from '@typo3/core/lit-helper';
+import labels from '~labels/scheduler.messages';
 
 /**
  * Module: @typo3/scheduler/scheduler-add-groups
@@ -48,12 +48,12 @@ class SchedulerAddGroups {
 
         const modal = Modal.advanced({
           content: content,
-          title: lll('scheduler.createGroup') || 'New group',
+          title: labels.get('function.group.add'),
           size: Modal.sizes.small,
           buttons: [
             {
               trigger: (): void => Modal.dismiss(),
-              text: lll('scheduler.modalCancel') || 'Cancel',
+              text: labels.get('button.cancel'),
               btnClass: 'btn-default',
               name: 'cancel'
             },{
@@ -61,7 +61,7 @@ class SchedulerAddGroups {
                 const form: HTMLFormElement = Modal.currentModal.querySelector('form[name="scheduler-create-group"]');
                 form.requestSubmit();
               },
-              text: lll('scheduler.modalOk') || 'Create group',
+              text: labels.get('button.group.modalOk'),
               btnClass: 'btn-primary',
               name: 'ok'
             }
@@ -92,7 +92,7 @@ class SchedulerAddGroups {
         return await response.resolve();
       }).then((result: ResponseInterface): ResponseInterface => {
         if (result.hasErrors) {
-          Notification.error(lll('scheduler.group.error.title'), lll('scheduler.group.error.message') + ' "' + name + '"!');
+          Notification.error(labels.get('msg.group.notification.error.title'), labels.get('msg.group.notification.error.message') + ' "' + name + '"!');
         }
 
         result.messages.forEach((message) => {
@@ -101,7 +101,7 @@ class SchedulerAddGroups {
 
         return result;
       }).catch(() => {
-        Notification.error(lll('scheduler.group.error.title'), lll('scheduler.group.error.message') + ' "' + name + '"!');
+        Notification.error(labels.get('msg.group.notification.error.title'), labels.get('msg.group.notification.error.message') + ' "' + name + '"!');
       }).finally(() => {
         const select = (document as Document).querySelector('#task_group');
         if(select) {

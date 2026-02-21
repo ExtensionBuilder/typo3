@@ -15,10 +15,10 @@ import { customElement, property } from 'lit/decorators.js';
 import { PseudoButtonLitElement } from '@typo3/backend/element/pseudo-button';
 import { SeverityEnum } from '@typo3/backend/enum/severity';
 import { default as Modal, type ModalElement } from '@typo3/backend/modal';
-import { lll } from '@typo3/core/lit-helper';
 import AjaxRequest from '@typo3/core/ajax/ajax-request';
 import type { AjaxResponse } from '@typo3/core/ajax/ajax-response';
 import Notification from '@typo3/backend/notification';
+import listLabels from '~labels/core.mod_web_list';
 
 enum Selectors {
   columnsSelector = '.t3js-column-selector',
@@ -54,8 +54,8 @@ export class ColumnSelectorButton extends PseudoButtonLitElement {
   @property({ type: String, attribute: 'data-url' }) modalUrl: string;
   @property({ type: String, attribute: 'data-target' }) modalTarget: string;
   @property({ type: String, attribute: 'data-title' }) modalTitle: string = 'Show columns';
-  @property({ type: String, attribute: 'data-button-ok' }) buttonOk: string = lll('button.ok') || 'Update';
-  @property({ type: String, attribute: 'data-button-close' }) buttonClose: string = lll('button.close') || 'Close';
+  @property({ type: String, attribute: 'data-button-ok' }) buttonOk: string = listLabels.get('button.ok');
+  @property({ type: String, attribute: 'data-button-close' }) buttonClose: string = listLabels.get('button.close');
   @property({ type: String, attribute: 'data-error-message' }) errorMessage: string = 'Could not update columns';
 
   /**

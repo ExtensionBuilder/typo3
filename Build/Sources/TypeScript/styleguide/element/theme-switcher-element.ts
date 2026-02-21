@@ -13,14 +13,15 @@
 
 import { customElement, property } from 'lit/decorators.js';
 import { html, LitElement, type TemplateResult } from 'lit';
-import { lll } from '@typo3/core/lit-helper';
+import labels from '~labels/styleguide.messages';
+import backendLabels from '~labels/backend.messages';
 import '@typo3/backend/element/icon-element';
 import 'bootstrap'; // for data-bs-toggle="dropdown"
 
 type ThemeIdentifier = string;
 type Theme = {
   icon: string,
-  label: string
+  label: string,
 };
 
 const selectorConverter = {
@@ -68,7 +69,7 @@ export class ThemeSwitcherElement extends LitElement {
         <li>
           <button class="dropdown-item dropdown-item-spaced" data-theme="${identifier}" @click="${this.setTheme}">
             ${identifier === this.activeTheme ? dropdownActiveIcon : dropdownInactiveIcon}
-            ${lll(theme.label)}
+            ${backendLabels.get(theme.label as 'colorScheme.auto' | 'colorScheme.light' | 'colorScheme.dark')}
           </button>
         </li>
       `);
@@ -76,10 +77,10 @@ export class ThemeSwitcherElement extends LitElement {
 
     return html`
       <div class="colorscheme-switch">
-        ${lll('colorScheme.selector.label')}
+        ${labels.get('colorScheme.selector.label')}
         <div class="dropdown">
           <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <typo3-backend-icon identifier="${this.themes[this.activeTheme].icon}" size="small"></typo3-backend-icon> ${lll(this.themes[this.activeTheme].label)}
+            <typo3-backend-icon identifier="${this.themes[this.activeTheme].icon}" size="small"></typo3-backend-icon> ${backendLabels.get(this.themes[this.activeTheme].label as 'colorScheme.auto' | 'colorScheme.light' | 'colorScheme.dark')}
           </button>
           <ul class="dropdown-menu">
             ${themeOptions}

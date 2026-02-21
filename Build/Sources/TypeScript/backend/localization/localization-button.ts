@@ -15,8 +15,8 @@ import { html } from 'lit';
 import { PseudoButtonLitElement } from '@typo3/backend/element/pseudo-button';
 import { customElement, property } from 'lit/decorators.js';
 import { SeverityEnum } from '@typo3/backend/enum/severity';
-import { lll } from '@typo3/core/lit-helper';
 import Modal from '@typo3/backend/modal';
+import labels from '~labels/backend.wizards.localization';
 
 @customElement('typo3-backend-localization-button')
 export class LocalizationButton extends PseudoButtonLitElement {
@@ -35,7 +35,7 @@ export class LocalizationButton extends PseudoButtonLitElement {
     `;
 
     Modal.advanced({
-      title: lll('localization_wizard.modal.title'),
+      title: labels.get('localization_wizard.modal.title'),
       content: content,
       severity: SeverityEnum.notice,
       size: Modal.sizes.medium,

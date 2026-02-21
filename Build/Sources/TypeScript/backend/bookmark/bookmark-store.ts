@@ -13,8 +13,8 @@
 
 import AjaxRequest from '@typo3/core/ajax/ajax-request';
 import type { AjaxResponse } from '@typo3/core/ajax/ajax-response';
-import { lll } from '@typo3/core/lit-helper';
 import labels from '~labels/core.bookmarks';
+import listLabels from '~labels/core.mod_web_list';
 import Modal from '../modal';
 import Notification from '../notification';
 import { SeverityEnum } from '../enum/severity';
@@ -298,13 +298,13 @@ class BookmarkStore {
       SeverityEnum.warning,
       [
         {
-          text: lll('button.cancel'),
+          text: listLabels.get('button.cancel'),
           btnClass: 'btn-default',
           name: 'cancel',
           trigger: () => confirmModal.hideModal(),
         },
         {
-          text: lll('button.delete'),
+          text: listLabels.get('button.delete'),
           btnClass: 'btn-danger',
           name: 'delete',
           trigger: async () => {

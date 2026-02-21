@@ -18,7 +18,7 @@ import Modal from '@typo3/backend/modal';
 import ModuleMenu from '@typo3/backend/module-menu';
 import Notification from '@typo3/backend/notification';
 import ImmediateAction from '@typo3/backend/action-button/immediate-action';
-import { lll } from '@typo3/core/lit-helper';
+import labels from '~labels/backend.wizards.move_page';
 
 export class MovePage {
   public constructor() {
@@ -50,15 +50,17 @@ export class MovePage {
         Modal.dismiss();
 
         Notification.success(
-          lll(isCopyAction ? 'movePage.notification.pageCopied.title' : 'movePage.notification.pageMoved.title'),
-          lll(isCopyAction ? 'movePage.notification.pageCopied.message' : 'movePage.notification.pageMoved.message', recordTitle),
+          isCopyAction ? labels.get('movePage.notification.pageCopied.title') : labels.get('movePage.notification.pageMoved.title'),
+          isCopyAction
+            ? labels.get('movePage.notification.pageCopied.message', [recordTitle])
+            : labels.get('movePage.notification.pageMoved.message', [recordTitle]),
           10,
           [
             {
-              label: lll('movePage.notification.pagePasted.action.dismiss'),
+              label: labels.get('movePage.notification.pagePasted.action.dismiss'),
             },
             {
-              label: lll('movePage.notification.pagePasted.action.open', recordTitle),
+              label: labels.get('movePage.notification.pagePasted.action.open', [recordTitle]),
               action: new ImmediateAction((): void => {
                 ModuleMenu.App.showModule('records', 'id=' + url.searchParams.get('uid'));
               })

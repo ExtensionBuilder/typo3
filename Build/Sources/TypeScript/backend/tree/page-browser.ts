@@ -14,7 +14,6 @@
 import { html, LitElement, nothing, type TemplateResult } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { until } from 'lit/directives/until.js';
-import { lll } from '@typo3/core/lit-helper';
 import { PageTree } from '@typo3/backend/tree/page-tree';
 import AjaxRequest from '@typo3/core/ajax/ajax-request';
 import '@typo3/backend/tree/tree-toolbar';
@@ -22,6 +21,7 @@ import ElementBrowser from '@typo3/backend/element-browser';
 import LinkBrowser from '@typo3/backend/link-browser';
 import '@typo3/backend/element/icon-element';
 import Persistent from '@typo3/backend/storage/persistent';
+import coreLabels from '~labels/core.core';
 import type { AjaxResponse } from '@typo3/core/ajax/ajax-response';
 import type { TreeToolbar } from '@typo3/backend/tree/tree-toolbar';
 import type { TreeNodeInterface } from './tree-node';
@@ -237,7 +237,7 @@ export class PageBrowser extends LitElement {
       <div class="node-mount-point">
         <div class="node-mount-point__icon"><typo3-backend-icon identifier="actions-info-circle" size="small"></typo3-backend-icon></div>
         <div class="node-mount-point__text">${this.mountPointPath}</div>
-        <div class="node-mount-point__icon mountpoint-close" @click="${() => this.unsetTemporaryMountPoint()}" title="${lll('labels.temporaryPageTreeEntryPoints')}">
+        <div class="node-mount-point__icon mountpoint-close" @click="${() => this.unsetTemporaryMountPoint()}" title="${coreLabels.get('labels.temporaryPageTreeEntryPoints')}">
           <typo3-backend-icon identifier="actions-close" size="small"></typo3-backend-icon>
         </div>
       </div>

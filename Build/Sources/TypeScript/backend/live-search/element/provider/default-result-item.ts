@@ -14,7 +14,7 @@
 import { customElement, property } from 'lit/decorators.js';
 import { html, LitElement, nothing, type TemplateResult } from 'lit';
 import '@typo3/backend/element/icon-element';
-import { lll } from '@typo3/core/lit-helper';
+import miscLabels from '~labels/core.misc';
 
 @customElement('typo3-backend-live-search-result-item-default')
 export class DefaultProviderResultItem extends LitElement {
@@ -36,7 +36,7 @@ export class DefaultProviderResultItem extends LitElement {
       <div class="livesearch-result-item-summary">
         <div class="livesearch-result-item-title">
           <div class="livesearch-result-item-title-contentlabel">${this.itemTitle}</div>
-          ${this.extraData.inWorkspace ? html`<div class="livesearch-result-item-title-indicator"><typo3-backend-icon title="${lll('liveSearch.versionizedRecord')}" identifier="actions-dot" size="small" class="text-warning"></typo3-backend-icon></div>` : nothing}
+          ${this.extraData.inWorkspace ? html`<div class="livesearch-result-item-title-indicator"><typo3-backend-icon title="${miscLabels.get('liveSearch.versionizedRecord')}" identifier="actions-dot" size="small" class="text-warning"></typo3-backend-icon></div>` : nothing}
         </div>
         ${this.extraData.breadcrumb !== undefined ? html`<small>${this.extraData.breadcrumb}</small>` : nothing}
       </div>

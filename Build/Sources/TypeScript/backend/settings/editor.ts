@@ -20,11 +20,12 @@ import Notification from '@typo3/backend/notification';
 import DomHelper from '@typo3/backend/utility/dom-helper';
 import AjaxRequest from '@typo3/core/ajax/ajax-request';
 import { copyToClipboard } from '@typo3/backend/copy-to-clipboard';
-import { lll } from '@typo3/core/lit-helper';
 import { markdown } from '@typo3/core/directive/markdown';
 import '@typo3/backend/settings/editor/editable-setting';
 import { SettingsMode, sanitizeSettingsMode } from '@typo3/backend/settings/enum/settings-mode.enum';
 import '@typo3/backend/element/icon-element';
+import labels from '~labels/backend.settingseditor';
+import copyToClipboardLabels from '~labels/backend.copytoclipboard';
 
 // preload known/common types
 import '@typo3/backend/settings/type/bool';
@@ -315,7 +316,7 @@ export class SettingsEditorElement extends LitElement {
         copyToClipboard(result.yaml);
       } else {
         console.warn('Value can not be copied to clipboard.', typeof result.yaml);
-        Notification.error(lll('copyToClipboard.error'));
+        Notification.error(copyToClipboardLabels.get('copyToClipboard.error'));
       }
     }
   }
@@ -345,14 +346,14 @@ export class SettingsEditorElement extends LitElement {
           ${this.mode !== SettingsMode.minimal ? html`
             <div class="settings-search">
               <label for="settings-search" class="visually-hidden">
-                ${lll('settingseditor.search.searchTermVisuallyHiddenLabel')}
+                ${labels.get('settingseditor.search.searchTermVisuallyHiddenLabel')}
               </label>
               <input
                 type="search"
                 autocomplete="off"
                 id="settings-search"
                 class="form-control"
-                placeholder=${lll('settingseditor.search.searchTermPlaceholder')}
+                placeholder=${labels.get('settingseditor.search.searchTermPlaceholder')}
                 .value=${live(this.searchTerm)}
                 @change=${(e: Event) => this.onSearch(e)}
                 @input=${(e: Event) => this.onSearch(e)}>
@@ -385,14 +386,14 @@ export class SettingsEditorElement extends LitElement {
               </span>
             </div>
             <div class="callout-content">
-              <div class="callout-title">${lll('settingseditor.search.noResultsTitle')}</div>
+              <div class="callout-title">${labels.get('settingseditor.search.noResultsTitle')}</div>
               <div class="callout-body">
-                <p>${lll('settingseditor.search.noResultsMessage')}</p>
+                <p>${labels.get('settingseditor.search.noResultsMessage')}</p>
                 <button
                     type="button"
                     class="btn btn-default"
                     @click=${() => this.searchTerm = ''}
-                  >${lll('settingseditor.search.noResultsResetButtonLabel')}</button>
+                  >${labels.get('settingseditor.search.noResultsResetButtonLabel')}</button>
               </div>
             </div>
           </div>

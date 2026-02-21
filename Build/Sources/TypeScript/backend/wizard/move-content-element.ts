@@ -17,8 +17,9 @@ import AjaxDataHandler from '@typo3/backend/ajax-data-handler';
 import Modal from '@typo3/backend/modal';
 import Notification from '@typo3/backend/notification';
 import ImmediateAction from '@typo3/backend/action-button/immediate-action';
-import { lll } from '@typo3/core/lit-helper';
 import Viewport from '@typo3/backend/viewport';
+import labels from '~labels/backend.wizards.move_content_elements';
+import miscLabels from '~labels/core.misc';
 
 export class MoveContentElement {
   public constructor() {
@@ -37,12 +38,15 @@ export class MoveContentElement {
       const uid = url.searchParams.get('uid');
       const headline = document.querySelector('h2') as HTMLHeadingElement;
       if (headline) {
-        headline.innerText = lll('headline.' + ((e.target as HTMLInputElement).checked ? 'copy' : 'move'), recordTitle, uid);
+        const parameters = [recordTitle, Number(uid)] as const;
+        headline.innerText = (e.target as HTMLInputElement).checked
+          ? labels.get('headline.copy', parameters)
+          : labels.get('headline.move', parameters);
       }
 
       const buttonLabel = (e.target as HTMLInputElement).checked
-        ? lll('copyElementToHere')
-        : lll('moveElementToHere');
+        ? miscLabels.get('copyElementToHere')
+        : miscLabels.get('moveElementToHere');
 
       document.querySelectorAll('[data-action="paste"]').forEach((button: HTMLButtonElement): void => {
         button.querySelector('span.t3js-button-label').textContent = buttonLabel;
@@ -83,15 +87,17 @@ export class MoveContentElement {
         Modal.dismiss();
 
         Notification.success(
-          lll(isCopyAction ? 'moveElement.notification.elementCopied.title' : 'moveElement.notification.elementMoved.title'),
-          lll(isCopyAction ? 'moveElement.notification.elementCopied.message' : 'moveElement.notification.elementMoved.message', recordTitle),
+          isCopyAction ? labels.get('moveElement.notification.elementCopied.title') : labels.get('moveElement.notification.elementMoved.title'),
+          isCopyAction
+            ? labels.get('moveElement.notification.elementCopied.message', [recordTitle])
+            : labels.get('moveElement.notification.elementMoved.message', [recordTitle]),
           10,
           [
             {
-              label: lll('moveElement.notification.elementPasted.action.dismiss'),
+              label: labels.get('moveElement.notification.elementPasted.action.dismiss'),
             },
             {
-              label: lll('moveElement.notification.elementPasted.action.open', targetPageTitle),
+              label: labels.get('moveElement.notification.elementPasted.action.open', [targetPageTitle]),
               action: new ImmediateAction((): void => {
                 returnUrl.searchParams.set('id', pageUid);
                 Viewport.ContentContainer.setUrl(returnUrl);

@@ -15,7 +15,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { PseudoButtonLitElement } from '@typo3/backend/element/pseudo-button';
 import { SeverityEnum } from '@typo3/backend/enum/severity';
 import Modal from '@typo3/backend/modal';
-import { lll } from '@typo3/core/lit-helper';
+import listLabels from '~labels/core.mod_web_list';
 
 enum Selectors {
   formatSelector = '.t3js-record-download-format-selector',
@@ -55,14 +55,14 @@ export class RecordDownloadButton extends PseudoButtonLitElement {
       type: Modal.types.ajax,
       buttons: [
         {
-          text: this.close || lll('button.close') || 'Close',
+          text: this.close || listLabels.get('button.close'),
           active: true,
           btnClass: 'btn-default',
           name: 'cancel',
           trigger: (): void => modal.hideModal(),
         },
         {
-          text: this.ok || lll('button.ok') || 'Download',
+          text: this.ok || listLabels.get('button.ok'),
           btnClass: 'btn-primary',
           name: 'download',
           trigger: (): void => {

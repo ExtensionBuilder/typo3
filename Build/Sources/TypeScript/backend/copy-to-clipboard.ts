@@ -14,13 +14,13 @@
 import { customElement, property } from 'lit/decorators.js';
 import { PseudoButtonLitElement } from '@typo3/backend/element/pseudo-button';
 import Notification from '@typo3/backend/notification';
-import { lll } from '@typo3/core/lit-helper';
+import labels from '~labels/backend.copytoclipboard';
 
 export function copyToClipboard(text: string, silent: boolean = false): void {
   if (!text.length) {
     console.warn('No text for copy to clipboard given.');
     if (!silent) {
-      Notification.error(lll('copyToClipboard.error'));
+      Notification.error(labels.get('copyToClipboard.error'));
     }
     return;
   }
@@ -28,12 +28,12 @@ export function copyToClipboard(text: string, silent: boolean = false): void {
     navigator.clipboard.writeText(text).then((): void => {
       document.dispatchEvent(new CustomEvent('copy-to-clipboard-success'));
       if (!silent) {
-        Notification.success(lll('copyToClipboard.success'), '', 1);
+        Notification.success(labels.get('copyToClipboard.success'), '', 1);
       }
     }).catch((): void => {
       document.dispatchEvent(new CustomEvent('copy-to-clipboard-error'));
       if (!silent) {
-        Notification.error(lll('copyToClipboard.error'));
+        Notification.error(labels.get('copyToClipboard.error'));
       }
     });
   } else {
@@ -46,16 +46,16 @@ export function copyToClipboard(text: string, silent: boolean = false): void {
       if (document.execCommand('copy')) {
         document.dispatchEvent(new CustomEvent('copy-to-clipboard-success'));
         if (!silent) {
-          Notification.success(lll('copyToClipboard.success'), '', 1);
+          Notification.success(labels.get('copyToClipboard.success'), '', 1);
         }
       } else if (!silent) {
         document.dispatchEvent(new CustomEvent('copy-to-clipboard-error'));
-        Notification.error(lll('copyToClipboard.error'));
+        Notification.error(labels.get('copyToClipboard.error'));
       }
     } catch {
       if (!silent) {
         document.dispatchEvent(new CustomEvent('copy-to-clipboard-error'));
-        Notification.error(lll('copyToClipboard.error'));
+        Notification.error(labels.get('copyToClipboard.error'));
       }
     }
     document.body.removeChild(textarea);
@@ -83,7 +83,7 @@ export class CopyToClipboard extends PseudoButtonLitElement {
       console.warn('No text for copy to clipboard given.');
       if (!this.silent) {
         document.dispatchEvent(new CustomEvent('copy-to-clipboard-error'));
-        Notification.error(lll('copyToClipboard.error'));
+        Notification.error(labels.get('copyToClipboard.error'));
       }
       return;
     }

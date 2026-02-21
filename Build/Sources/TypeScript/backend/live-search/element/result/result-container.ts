@@ -15,11 +15,11 @@ import LiveSearchConfigurator from '@typo3/backend/live-search/live-search-confi
 import Viewport from '@typo3/backend/viewport';
 import { customElement, property, query } from 'lit/decorators.js';
 import { html, LitElement, nothing, type TemplateResult } from 'lit';
-import { lll } from '@typo3/core/lit-helper';
 import { type ItemContainer } from './item/item-container';
 import { type ResultDetailContainer } from './result-detail-container';
 import type { ResultItemActionInterface, ResultItemInterface } from './item/item';
 import type { ChooseItemEventData } from '@typo3/backend/live-search/live-search';
+import miscLabels from '~labels/core.misc';
 
 export interface InvokeActionEventData {
   resultItem: ResultItemInterface,
@@ -66,7 +66,7 @@ export class ResultContainer extends LitElement {
     }
 
     if (this.hasErrors) {
-      return html`<div class="alert alert-danger">${lll('liveSearch_hasErrors')}</div>`;
+      return html`<div class="alert alert-danger">${miscLabels.get('liveSearch_hasErrors')}</div>`;
     }
 
     if (this.results === null) {
@@ -74,7 +74,7 @@ export class ResultContainer extends LitElement {
     }
 
     if (this.results.length === 0) {
-      return html`<div class="alert alert-info">${lll('liveSearch_listEmptyText')}</div>`;
+      return html`<div class="alert alert-info">${miscLabels.get('liveSearch_listEmptyText')}</div>`;
     }
 
     return html`

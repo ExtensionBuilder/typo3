@@ -15,8 +15,8 @@ import { html, css, LitElement, type PropertyValues, type TemplateResult } from 
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap, type StyleInfo } from 'lit/directives/style-map.js';
-import { lll } from '@typo3/core/lit-helper';
 import Persistent from '../storage/persistent';
+import backendLabels from '~labels/backend.messages';
 
 export enum ContentNavigationSlotEnum {
   navigation = 'navigation',
@@ -179,8 +179,8 @@ export class ContentNavigation extends LitElement {
   @property({ type: Number, attribute: 'navigation-initial-width' }) navigationInitialWidth?: number;
   @property({ type: Boolean, attribute: 'navigation-hidden', reflect: true }) navigationHidden: boolean = false;
   @property({ type: Boolean, attribute: 'navigation-collapsed', reflect: true }) navigationCollapsed: boolean = false;
-  @property({ type: String, attribute: 'navigation-label-collapse' }) navigationLabelCollapse: string = lll('viewport.navigation.hide');
-  @property({ type: String, attribute: 'navigation-label-expand' }) navigationLabelExpand: string = lll('viewport.navigation.show');
+  @property({ type: String, attribute: 'navigation-label-collapse' }) navigationLabelCollapse: string = backendLabels.get('viewport.navigation.hide');
+  @property({ type: String, attribute: 'navigation-label-expand' }) navigationLabelExpand: string = backendLabels.get('viewport.navigation.show');
   @property({ type: Boolean, reflect: true }) resizing: boolean = false;
 
   @query('slot[name="navigation"]') readonly navigationSlot!: HTMLSlotElement | null;

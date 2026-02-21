@@ -13,11 +13,11 @@
 
 import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { lll } from '@typo3/core/lit-helper';
 import DebounceEvent from '@typo3/core/event/debounce-event';
 import '@typo3/backend/element/icon-element';
 import '@typo3/backend/viewport/content-navigation-toggle';
 import { Tree } from './tree';
+import coreLabels from '~labels/core.core';
 import type { TreeNodeInterface } from './tree-node';
 import 'bootstrap'; // for data-bs-toggle="dropdown"
 
@@ -51,9 +51,9 @@ export class TreeToolbar extends LitElement {
         <div class="tree-toolbar__menu">
           <div class="tree-toolbar__search">
               <label for="toolbarSearch" class="visually-hidden">
-                ${lll('labels.label.searchString')}
+                ${coreLabels.get('labels.label.searchString')}
               </label>
-              <input type="search" autocomplete="off" id="toolbarSearch" class="form-control form-control-sm search-input" placeholder="${this.tree?.setup?.searchPlaceholder || lll('tree.searchTermInfo')}">
+              <input type="search" autocomplete="off" id="toolbarSearch" class="form-control form-control-sm search-input" placeholder="${this.tree?.setup?.searchPlaceholder || coreLabels.get('tree.searchTermInfo')}">
           </div>
           <div class="dropdown">
             <button
@@ -62,7 +62,7 @@ export class TreeToolbar extends LitElement {
               data-bs-toggle="dropdown"
               data-bs-boundary="window"
               aria-expanded="false"
-              aria-label="${lll('labels.openTreeOptionsMenu')}"
+              aria-label="${coreLabels.get('labels.openTreeOptionsMenu')}"
             >
               <typo3-backend-icon identifier="actions-menu-alternative" size="small"></typo3-backend-icon>
             </button>
@@ -75,7 +75,7 @@ export class TreeToolbar extends LitElement {
                       <typo3-backend-icon identifier="actions-refresh" size="small"></typo3-backend-icon>
                     </span>
                     <span class="dropdown-item-column dropdown-item-column-title">
-                      ${lll('labels.refresh')}
+                      ${coreLabels.get('labels.refresh')}
                     </span>
                   </span>
                 </button>
@@ -88,7 +88,7 @@ export class TreeToolbar extends LitElement {
                       <typo3-backend-icon identifier="apps-pagetree-category-collapse-all" size="small"></typo3-backend-icon>
                     </span>
                     <span class="dropdown-item-column dropdown-item-column-title">
-                      ${lll('labels.collapse')}
+                      ${coreLabels.get('labels.collapse')}
                     </span>
                   </span>
                 </button>

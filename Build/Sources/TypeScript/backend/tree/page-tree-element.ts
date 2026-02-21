@@ -14,7 +14,6 @@
 import { html, LitElement, type TemplateResult, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { until } from 'lit/directives/until.js';
-import { lll } from '@typo3/core/lit-helper';
 import AjaxRequest from '@typo3/core/ajax/ajax-request';
 import Persistent from '@typo3/backend/storage/persistent';
 import { ModuleUtility } from '@typo3/backend/module';
@@ -406,7 +405,7 @@ export class PageTreeNavigationComponent extends TreeModuleState(LitElement) {
       <div class="node-mount-point">
         <div class="node-mount-point__icon"><typo3-backend-icon identifier="actions-info-circle" size="small"></typo3-backend-icon></div>
         <div class="node-mount-point__text">${this.mountPointPath}</div>
-        <div class="node-mount-point__icon mountpoint-close" @click="${() => this.unsetTemporaryMountPoint()}" title="${lll('labels.temporaryPageTreeEntryPoints')}">
+        <div class="node-mount-point__icon mountpoint-close" @click="${() => this.unsetTemporaryMountPoint()}" title="${coreLabels.get('labels.temporaryPageTreeEntryPoints')}">
           <typo3-backend-icon identifier="actions-close" size="small"></typo3-backend-icon>
         </div>
       </div>
@@ -503,9 +502,9 @@ class PageTreeToolbar extends TreeToolbar {
         <div class="tree-toolbar__menu">
           <div class="tree-toolbar__search">
               <label for="toolbarSearch" class="visually-hidden">
-                ${lll('labels.label.searchString')}
+                ${coreLabels.get('labels.label.searchString')}
               </label>
-              <input type="search" autocomplete="off" id="toolbarSearch" class="form-control form-control-sm search-input" placeholder="${lll('tree.searchPageTree')}">
+              <input type="search" autocomplete="off" id="toolbarSearch" class="form-control form-control-sm search-input" placeholder="${coreLabels.get('tree.searchPageTree')}">
           </div>
           <div class="dropdown">
             <button
@@ -514,7 +513,7 @@ class PageTreeToolbar extends TreeToolbar {
               data-bs-toggle="dropdown"
               data-bs-boundary="window"
               aria-expanded="false"
-              aria-label="${lll('labels.openPageTreeOptionsMenu')}"
+              aria-label="${coreLabels.get('labels.openPageTreeOptionsMenu')}"
             >
               <typo3-backend-icon identifier="actions-menu-alternative" size="small"></typo3-backend-icon>
             </button>
@@ -526,7 +525,7 @@ class PageTreeToolbar extends TreeToolbar {
                       <typo3-backend-icon identifier="actions-refresh" size="small"></typo3-backend-icon>
                     </span>
                     <span class="dropdown-item-column dropdown-item-column-title">
-                      ${lll('labels.refresh')}
+                      ${coreLabels.get('labels.refresh')}
                     </span>
                   </span>
                 </button>
@@ -538,7 +537,7 @@ class PageTreeToolbar extends TreeToolbar {
                       <typo3-backend-icon identifier="apps-pagetree-category-collapse-all" size="small"></typo3-backend-icon>
                     </span>
                     <span class="dropdown-item-column dropdown-item-column-title">
-                      ${lll('labels.collapse')}
+                      ${coreLabels.get('labels.collapse')}
                     </span>
                   </span>
                 </button>
@@ -596,7 +595,7 @@ class PageTreeToolbar extends TreeToolbar {
                 <typo3-backend-icon identifier="${this.searchInTranslatedPages ? 'actions-check-square' : 'actions-selection'}" size="small"></typo3-backend-icon>
               </span>
               <span class="dropdown-item-column dropdown-item-column-title">
-                ${lll('tree.search_in_translated_pages')}
+                ${coreLabels.get('tree.search_in_translated_pages')}
               </span>
             </span>
           </button>
@@ -610,7 +609,7 @@ class PageTreeToolbar extends TreeToolbar {
                 <typo3-backend-icon identifier="${this.searchByFrontendUri ? 'actions-check-square' : 'actions-selection'}" size="small"></typo3-backend-icon>
               </span>
               <span class="dropdown-item-column dropdown-item-column-title">
-                ${lll('tree.search_by_frontend_uri')}
+                ${coreLabels.get('tree.search_by_frontend_uri')}
               </span>
             </span>
           </button>
