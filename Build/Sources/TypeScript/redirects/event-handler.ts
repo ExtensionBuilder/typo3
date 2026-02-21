@@ -16,6 +16,7 @@ import AjaxRequest from '@typo3/core/ajax/ajax-request';
 import NotificationService from '@typo3/backend/notification';
 import DeferredAction from '@typo3/backend/action-button/deferred-action';
 import type { AbstractAction } from '@typo3/backend/action-button/abstract-action';
+import labels from '~labels/redirects.slug_service';
 
 type Correlation = {
   correlationIdPageUpdate: string;
@@ -52,7 +53,7 @@ class EventHandler {
 
     if (detail.autoUpdateSlugs) {
       actions.push({
-        label: TYPO3.lang['notification.redirects.button.revert_update'],
+        label: labels.get('notification.redirects.button.revert_update'),
         action: new DeferredAction(async () => {
           await this.revert([
             correlations.correlationIdPageUpdate,
@@ -64,7 +65,7 @@ class EventHandler {
     }
     if (detail.autoCreateRedirects) {
       actions.push({
-        label: TYPO3.lang['notification.redirects.button.revert_redirect'],
+        label: labels.get('notification.redirects.button.revert_redirect'),
         action: new DeferredAction(async () => {
           await this.revert([
             correlations.correlationIdRedirectCreation,
@@ -73,11 +74,11 @@ class EventHandler {
       });
     }
 
-    let title = TYPO3.lang['notification.slug_only.title'];
-    let message = TYPO3.lang['notification.slug_only.message'];
+    let title = labels.get('notification.slug_only.title');
+    let message = labels.get('notification.slug_only.message');
     if (detail.autoCreateRedirects) {
-      title = TYPO3.lang['notification.slug_and_redirects.title'];
-      message = TYPO3.lang['notification.slug_and_redirects.message'];
+      title = labels.get('notification.slug_and_redirects.title');
+      message = labels.get('notification.slug_and_redirects.message');
     }
     NotificationService.info(
       title,
@@ -103,7 +104,10 @@ class EventHandler {
         NotificationService.error(json.title, json.message);
       }
     }).catch((): void => {
-      NotificationService.error(TYPO3.lang.redirects_error_title, TYPO3.lang.redirects_error_message);
+      NotificationService.error(
+        labels.get('redirects_error_title'),
+        labels.get('redirects_error_message'),
+      );
     });
     return request;
   }
