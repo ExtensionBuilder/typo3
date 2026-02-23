@@ -22,13 +22,15 @@ class Loader {
       this.el = document.createElement('typo3-backend-progress-bar');
       ScaffoldContentArea.getContentContainer()?.appendChild(this.el);
     }
-    this.el.start();
+    this.el.start(true);
   }
 
-  public static finish(): void {
+  public static async finish(): Promise<void> {
     if (this.el) {
-      this.el.done();
-      this.el = null;
+      await this.el.done();
+      if (!this.el.isRunning()) {
+        this.el = null;
+      }
     }
   }
 }

@@ -50,7 +50,7 @@ class ContentContainer extends AbstractContainer {
         Loader.start();
         router.setAttribute('endpoint', urlToLoad);
         router.setAttribute('module', module ? module : null);
-        router.parentElement.addEventListener('typo3-module-loaded', (): void => Loader.finish(), { once: true });
+        router.parentElement.addEventListener('typo3-module-loaded', () => Loader.finish(), { once: true });
       } else {
         // popup mode assume that we're in a standalone frame if the router cannot be found.
         document.location.assign(urlToLoad);

@@ -154,6 +154,10 @@ export class ProgressBarElement extends LitElement {
    */
   private abortController: AbortController = new AbortController();
 
+  public isRunning(): boolean {
+    return !this.abortController.signal.aborted;
+  }
+
   /**
    * Start the progress bar. Sets value to 0 by default or undefined for indeterminate mode.
    *
