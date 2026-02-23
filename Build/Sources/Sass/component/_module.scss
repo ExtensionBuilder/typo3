@@ -20,7 +20,8 @@
     --module-docheader-bg: var(--module-bg);
     --module-docheader-border-color: color-mix(in srgb, var(--module-docheader-bg), var(--module-color) 10%);
     --module-docheader-border-width: 1px;
-    --module-docheader-bar-height: calc((var(--module-docheader-padding-y) * 2) + 1.78125rem); // 28.5px / 16 - to match input small height
+    --module-docheader-column-height: 1.78125rem; // 28.5px / 16 - to match input small height
+    --module-docheader-bar-height: calc((var(--module-docheader-padding-y) * 2) + var(--module-docheader-column-height));
     --module-docheader-scroll-offset: calc(-1 * (var(--module-docheader-bar-height) + var(--module-docheader-padding-y)));
     --module-docheader-height: calc(var(--module-docheader-bar-height) * 2 + var(--module-docheader-border-width));
     --module-docheader-box-shadow: var(--typo3-shadow-2);
@@ -83,6 +84,11 @@ body:has(.module) *:target {
         align-items: center;
         display: flex;
         max-width: 100%;
+        min-height: var(--module-docheader-column-height);
+
+        &:not(:has(> *)) {
+            display: none;
+        }
 
         &:has(typo3-backend-content-navigation-toggle[hidden]) {
             display: none;

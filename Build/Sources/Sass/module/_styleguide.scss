@@ -92,11 +92,6 @@
         border-end-end-radius: calc(var(--typo3-example-border-radius) - var(--typo3-example-border-width));
     }
 
-    .styleguide-example-content {
-        @include background-checkered();
-        padding: var(--typo3-example-content-padding);
-    }
-
     .styleguide-example-code {
         background-color: var(--typo3-example-code-bg);
         border-top: var(--typo3-example-code-border-top-width) solid var(--typo3-example-code-border-top-color);

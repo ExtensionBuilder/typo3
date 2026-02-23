@@ -11,10 +11,15 @@ typo3-breadcrumb {
     --typo3-breadcrumb-divider-content: "/";
     --typo3-breadcrumb-divider-opacity: .25;
     --typo3-breadcrumb-divider-space: .35rem;
-    --typo3-breadcrumb-element-color: var(--typo3-text-color-link);
+    --typo3-breadcrumb-element-color: inherit;
     --typo3-breadcrumb-element-spacing: .25rem;
     --typo3-breadcrumb-element-padding-x: .5rem;
     --typo3-breadcrumb-element-padding-y: .25rem;
+}
+
+.breadcrumb-condensed {
+    --typo3-breadcrumb-divider-space: .2rem;
+    --typo3-breadcrumb-element-spacing: .15rem;
 }
 
 //

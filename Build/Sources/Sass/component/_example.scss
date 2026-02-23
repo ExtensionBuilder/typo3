@@ -38,6 +38,10 @@
         }
     }
 
+    &--checkered {
+        @include background-checkered();
+    }
+
     pre code {
         overflow: auto;
         width: 100%;
