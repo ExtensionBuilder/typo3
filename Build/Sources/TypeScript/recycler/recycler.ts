@@ -246,10 +246,10 @@ class Recycler {
     tableSelector.value = '';
     this.paging.currentPage = 1;
 
-    return new AjaxRequest(TYPO3.settings.ajaxUrls.recycler).withQueryArguments({
-      action: 'getTables',
+    return new AjaxRequest(TYPO3.settings.ajaxUrls['recycler.getTables']).withQueryArguments({
       startUid: TYPO3.settings.Recycler.startUid,
       depth: depthSelector.value,
+      depthSelection: depthSelector.value,
     }).get().then(async (response: AjaxResponse): Promise<AjaxResponse> => {
       const data = await response.resolve();
       const tables: Array<HTMLOptionElement> = [];
@@ -294,14 +294,15 @@ class Recycler {
     this.getProgress().start();
     this.resetMassActionButtons();
 
-    return new AjaxRequest(TYPO3.settings.ajaxUrls.recycler).withQueryArguments({
-      action: 'getDeletedRecords',
+    return new AjaxRequest(TYPO3.settings.ajaxUrls['recycler.getDeletedRecords']).withQueryArguments({
       depth: depthSelector.value,
       startUid: TYPO3.settings.Recycler.startUid,
       table: tableSelector.value,
       filterTxt: searchTextField.value,
       start: (this.paging.currentPage - 1) * this.paging.itemsPerPage,
       limit: this.paging.itemsPerPage,
+      depthSelection: depthSelector.value,
+      tableSelection: tableSelector.value,
     }).get().then(async (response: AjaxResponse): Promise<AjaxResponse> => {
       const tableWrapper = document.querySelector(Identifiers.recyclerTable);
       const tableBody = tableWrapper.querySelector('tbody');
@@ -467,23 +468,23 @@ class Recycler {
   }
 
   private async callAjaxAction(action: string, records: RecordToDelete[], isMassAction: boolean, recursive: boolean = false): Promise<AjaxResponse>|null {
-    const data: { records: RecordToDelete[], action: string, recursive?: number } = {
+    let ajaxUrl: string;
+    const data: { records: RecordToDelete[], recursive?: number } = {
       records: records,
-      action: '',
     };
     let reloadPageTree: boolean = false;
     if (action === 'undo') {
-      data.action = 'undoRecords';
+      ajaxUrl = TYPO3.settings.ajaxUrls['recycler.undoRecords'];
       data.recursive = recursive ? 1 : 0;
       reloadPageTree = true;
     } else if (action === 'delete') {
-      data.action = 'deleteRecords';
+      ajaxUrl = TYPO3.settings.ajaxUrls['recycler.deleteRecords'];
     } else {
       return null;
     }
 
     this.getProgress().start();
-    return new AjaxRequest(TYPO3.settings.ajaxUrls.recycler).post(data).then(async (response: AjaxResponse): Promise<AjaxResponse> => {
+    return new AjaxRequest(ajaxUrl).post(data).then(async (response: AjaxResponse): Promise<AjaxResponse> => {
       const responseData = await response.resolve();
 
       if (responseData.success) {
