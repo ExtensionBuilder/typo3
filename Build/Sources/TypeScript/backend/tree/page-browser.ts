@@ -165,8 +165,6 @@ export class PageBrowser extends LitElement {
     return this.getConfiguration()
       .then((configuration: Configuration): TemplateResult => {
         const initialized = () => {
-          this.tree.addEventListener('typo3:tree:node-selected', this.loadRecordsOfPage);
-          this.tree.addEventListener('typo3:tree:nodes-prepared', this.selectActivePageInTree);
           // set up toolbar now with updated properties
           const toolbar = this.querySelector('typo3-backend-tree-toolbar') as TreeToolbar;
           toolbar.tree = this.tree;
@@ -182,6 +180,8 @@ export class PageBrowser extends LitElement {
             id="typo3-pagetree-tree"
             .setup=${configuration}
             @tree:initialized=${initialized}
+            @typo3:tree:node-selected=${this.loadRecordsOfPage}
+            @typo3:tree:nodes-prepared=${this.selectActivePageInTree}
           >
           </typo3-backend-component-page-browser-tree>
         `;
