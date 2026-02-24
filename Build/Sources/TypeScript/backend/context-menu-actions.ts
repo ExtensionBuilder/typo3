@@ -25,6 +25,7 @@ import Utility from '@typo3/backend/utility';
 import { topLevelModuleImport } from '@typo3/backend/utility/top-level-module-import';
 import { html } from 'lit';
 import coreCommonLabels from '~labels/core.common';
+import cacheLabels from '~labels/core.cache';
 import listLabels from '~labels/core.mod_web_list';
 import layoutLabels from '~labels/backend.layout';
 
@@ -289,18 +290,25 @@ class ContextMenuActions {
    * Clear cache for given page uid
    */
   public static clearCache(table: string, uid: number): void {
-    (new AjaxRequest(TYPO3.settings.ajaxUrls.records_clearpagecache)).withQueryArguments({ id: uid }).get({ cache: 'no-cache' }).then(
+    (new AjaxRequest(TYPO3.settings.ajaxUrls.clearcache_page)).post({ id: uid }).then(
       async (response: AjaxResponse): Promise<void> => {
         const data = await response.resolve();
         if (data.success === true) {
-          Notification.success(data.title, data.message, 1);
+          Notification.success(
+            data.title,
+            data.message
+          );
         } else {
-          Notification.error(data.title, data.message, 1);
+          Notification.error(
+            data.title,
+            data.message
+          );
         }
       },
       (): void => {
         Notification.error(
-          'Clearing page caches went wrong on the server side.',
+          cacheLabels.get('notification.error.title'),
+          cacheLabels.get('notification.error.message')
         );
       }
     );

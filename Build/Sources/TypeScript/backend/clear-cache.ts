@@ -16,6 +16,7 @@ import Notification from '@typo3/backend/notification';
 import Icons from '@typo3/backend/icons';
 import RegularEvent from '@typo3/core/event/regular-event';
 import AjaxRequest from '@typo3/core/ajax/ajax-request';
+import cacheLabels from '~labels/core.cache';
 
 enum Identifiers {
   clearCache = '.t3js-clear-page-cache',
@@ -42,17 +43,24 @@ class ClearCache {
    * @return Promise<AjaxResponse>
    */
   private static sendClearCacheRequest(pageId: number): Promise<AjaxResponse> {
-    const request = new AjaxRequest(TYPO3.settings.ajaxUrls.records_clearpagecache).withQueryArguments({ id: pageId }).get({ cache: 'no-cache' });
+    const request = new AjaxRequest(TYPO3.settings.ajaxUrls.clearcache_page).post({ id: pageId });
     request.then(async (response: AjaxResponse): Promise<void> => {
       const data = await response.resolve();
       if (data.success === true) {
-        Notification.success(data.title, data.message, 1);
+        Notification.success(
+          data.title,
+          data.message
+        );
       } else {
-        Notification.error(data.title, data.message, 1);
+        Notification.error(
+          data.title,
+          data.message
+        );
       }
     }, (): void => {
       Notification.error(
-        'Clearing page caches went wrong on the server side.',
+        cacheLabels.get('notification.error.title'),
+        cacheLabels.get('notification.error.message'),
       );
     });
 
