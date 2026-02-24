@@ -8,11 +8,8 @@ TCEFORM {
   pages {
     subtitle.disabled = 1
     newUntil.disabled = 1
-    content_from_pid.disabled = 1
     php_tree_stop.disabled = 1
-    module.disabled = 1
     media.disabled = 1
-    tsconfig_includes.disabled = 1
     TSconfig.disabled = 1
     categories.disabled = 1
     layout.disabled = 1
