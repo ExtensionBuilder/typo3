@@ -133,7 +133,6 @@ export default (function() {
           btnClass: 'btn-' + Severity.getCssClass(Severity.warning),
           name: 'ok',
           trigger: () => {
-            FormEngine.disableDocHeaderButtons();
             FormEngine.closeModalsRecursive();
             saveDocumentWithoutValidation();
           }
@@ -918,29 +917,6 @@ export default (function() {
       });
       Modal.currentModal.hideModal();
     }
-  };
-
-  /**
-   * Disables all doc header buttons to prevent unintended operations.
-   * Useful when showing modals that require page reload (e.g., refreshRequiredConfirm)
-   * to prevent operations (e.g. save) on slow connections before the page is actually reloaded.
-   */
-  FormEngine.disableDocHeaderButtons = function(): void {
-    const docHeaderBar = document.querySelector('.t3js-module-docheader-buttons');
-    if (!docHeaderBar) {
-      return;
-    }
-
-    // Disable all buttons and links in the doc header
-    docHeaderBar.querySelectorAll('button, a, input[type="submit"]').forEach((element: HTMLElement): void => {
-      if (element instanceof HTMLButtonElement || element instanceof HTMLInputElement) {
-        element.disabled = true;
-      } else if (element instanceof HTMLAnchorElement) {
-        // For anchor elements - use TYPO3 standard approach
-        element.classList.add('disabled');
-        element.setAttribute('aria-disabled', 'true');
-      }
-    });
   };
 
   /**
