@@ -1,0 +1,20 @@
+// List Group
+.widget-listgroup {
+    --typo3-list-group-border-radius: 0;
+    --typo3-outline-width: 2px;
+    margin: calc(-1 * var(--widget-padding));
+
+    .list-group-item {
+        border-inline-start: 0;
+        border-inline-end: 0;
+        outline-offset: calc(var(--typo3-outline-width) * -1);
+
+        &:first-child {
+            border-block-start: 0;
+        }
+
+        &:last-child {
+            border-block-end: 0;
+        }
+    }
+}

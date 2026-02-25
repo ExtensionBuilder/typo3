@@ -1,0 +1,34 @@
+.activity {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    display: grid;
+    gap: 0 .5rem;
+    grid-template-columns: [icon] max-content [content-start] minmax(0, 1fr) [content-end time] max-content;
+    grid-template-areas: "icon title time";
+
+    > * {
+        grid-column: content-start / content-end;
+    }
+
+    &-icon {
+        grid-column: unset !important;
+        grid-area: icon;
+    }
+
+    &-title {
+        grid-column: unset !important;
+        grid-area: title;
+    }
+
+    &-time {
+        grid-column: unset !important;
+        grid-area: time;
+        font-size: var(--typo3-font-size-small);
+        opacity: .75;
+    }
+
+    &-source {
+        font-size: var(--typo3-font-size-small);
+    }
+}

@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace TYPO3\CMS\Backend\Domain\Model;
+namespace TYPO3\CMS\Opendocs\Domain\Model;
 
 /**
  * Value object representing an open document in the backend.
@@ -23,19 +23,16 @@ namespace TYPO3\CMS\Backend\Domain\Model;
  * An open document represents a record being edited in the FormEngine,
  * displayed in the "open documents" toolbar.
  *
+ * Identified uniquely by table:uid combination.
+ *
  * @internal
  */
 readonly class OpenDocument implements \JsonSerializable
 {
     public function __construct(
         public string $table,
-        public string $uid,
-        public string $title,
-        // Contains an array with key/value pairs of GET parameters needed to reach the
-        // current document displayed - used in the 'open documents' toolbar.
-        public array $parameters,
-        public int $pid,
-        public string $returnUrl = '',
+        public int $uid,
+        public \DateTimeImmutable $updatedAt,
     ) {}
 
     /**
@@ -53,14 +50,33 @@ readonly class OpenDocument implements \JsonSerializable
      */
     public static function fromLegacyArray(array $data): self
     {
+        $params = $data[1] ?? [];
         $metadata = $data[3] ?? [];
+
+        // Extract table and uid from params (edit configuration)
+        // Params structure: ['edit' => ['table_name' => [uid => 'edit']]]
+        $table = '';
+        $uid = 0;
+
+        if (isset($params['edit']) && is_array($params['edit'])) {
+            $table = (string)array_key_first($params['edit']);
+            if ($table && is_array($params['edit'][$table])) {
+                $uid = (int)array_key_first($params['edit'][$table]);
+            }
+        }
+
+        // Fallback to metadata if params didn't yield results
+        if (!$table && isset($metadata['table'])) {
+            $table = $metadata['table'];
+        }
+        if (!$uid && isset($metadata['uid'])) {
+            $uid = (int)$metadata['uid'];
+        }
+
         return new self(
-            table: $metadata['table'] ?? '',
-            uid: (string)($metadata['uid'] ?? '0'),
-            title: $data[0] ?? '',
-            parameters: $data[1] ?? [],
-            pid: (int)($metadata['pid'] ?? 0),
-            returnUrl: $data[4] ?? '',
+            table: $table,
+            uid: $uid,
+            updatedAt: isset($metadata['updatedAt']) ? new \DateTimeImmutable($metadata['updatedAt']) : new \DateTimeImmutable(),
         );
     }
 
@@ -68,11 +84,8 @@ readonly class OpenDocument implements \JsonSerializable
     {
         return new self(
             table: $data['table'] ?? '',
-            uid: (string)($data['uid'] ?? '0'),
-            title: $data['title'] ?? '',
-            parameters: $data['parameters'] ?? [],
-            pid: (int)($data['pid'] ?? 0),
-            returnUrl: $data['returnUrl'] ?? '',
+            uid: (int)($data['uid'] ?? 0),
+            updatedAt: isset($data['updatedAt']) ? new \DateTimeImmutable($data['updatedAt']) : new \DateTimeImmutable(),
         );
     }
 
@@ -81,10 +94,7 @@ readonly class OpenDocument implements \JsonSerializable
         return [
             'table' => $this->table,
             'uid' => $this->uid,
-            'title' => $this->title,
-            'parameters' => $this->parameters,
-            'pid' => $this->pid,
-            'returnUrl' => $this->returnUrl,
+            'updatedAt' => $this->updatedAt->format(\DateTimeInterface::ATOM),
         ];
     }
 
