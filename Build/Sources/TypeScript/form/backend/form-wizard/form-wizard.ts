@@ -51,7 +51,7 @@ export class FormWizard extends LitElement {
   @state() errorMessage: string = null;
 
   @property({ type: FormManager, attribute: false }) formManager: FormManager;
-  @property({ type: Object, attribute: false }) duplicateForm?: {name: string, persistenceIdentifier: string};
+  @property({ type: Object, attribute: false }) duplicateForm?: {name: string, persistenceIdentifier: string} = null;
 
   @query('typo3-backend-wizard') wizard!: Wizard;
 

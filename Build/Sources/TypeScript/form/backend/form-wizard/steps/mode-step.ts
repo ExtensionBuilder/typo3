@@ -63,6 +63,11 @@ export class ModeStep implements WizardStepInterface, WizardStepValueInterface, 
   }
 
   public render(): TemplateResult {
+    // Auto-select first mode if none selected
+    if (this.getValue() == null && this.modes.length > 0) {
+      this.setValue(this.modes[0].key);
+    }
+
     return html`
       <div class="form-mode-selection">
         <div class="form-check-card-container">
