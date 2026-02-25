@@ -48,6 +48,7 @@ export enum DateTimeDisplayMode {
  * <typo3-backend-datetime datetime="2024-01-15T10:30:00Z" mode="relative"></typo3-backend-datetime>
  * <typo3-backend-datetime datetime="1705324200"></typo3-backend-datetime>
  * <typo3-backend-datetime datetime="2020-01-15T10:30:00Z" mode="relative" threshold-days="365"></typo3-backend-datetime>
+ * <typo3-backend-datetime datetime="2024-01-15T10:30:00Z" mode="relative" relative-show-seconds></typo3-backend-datetime>
  * <typo3-backend-datetime datetime="2024-01-15T10:30:00Z" format="date"></typo3-backend-datetime>
  * <typo3-backend-datetime datetime="2024-01-15T10:30:00Z" format="datetime"></typo3-backend-datetime>
  * <typo3-backend-datetime datetime="2024-01-15T10:30:00Z" format="dd.MM.yyyy HH:mm"></typo3-backend-datetime>
@@ -58,6 +59,7 @@ export class DateTimeElement extends LitElement {
   @property() mode: DateTimeDisplayMode = DateTimeDisplayMode.Absolute;
   @property() format: string | null = 'date';
   @property({ type: Number, attribute: 'threshold-days' }) thresholdDays: number = 0;
+  @property({ type: Boolean, attribute: 'relative-show-seconds' }) relativeShowSeconds: boolean = false;
 
   @state() private displayTime: string = '';
 
@@ -69,7 +71,7 @@ export class DateTimeElement extends LitElement {
   }
 
   protected override willUpdate(changedProperties: PropertyValues<this>): void {
-    if (changedProperties.has('datetime') || changedProperties.has('mode') || changedProperties.has('format')) {
+    if (changedProperties.has('datetime') || changedProperties.has('mode') || changedProperties.has('format') || changedProperties.has('relativeShowSeconds')) {
       this.updateDisplayTime();
       this.clearUpdateTimeout();
       this.startUpdateTimeout();
@@ -232,6 +234,14 @@ export class DateTimeElement extends LitElement {
       if (daysDiff > this.thresholdDays) {
         // Date is too old, show absolute date instead using TYPO3's configured format
         return this.formatAbsoluteDate(localizedDateTime);
+      }
+    }
+
+    if (!this.relativeShowSeconds) {
+      const secondsDiff = localizedDateTime.diffNow('seconds').seconds;
+      if (Math.abs(secondsDiff) < 60) {
+        return localizedDateTime.toRelative({ unit: 'minutes', rounding: 'expand' })
+          || this.formatAbsoluteDateTime(localizedDateTime);
       }
     }
 
